@@ -1,0 +1,6 @@
+@B2B_Project.API_HostAddress = http://localhost:5186
+
+GET {{B2B_Project.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
