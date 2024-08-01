@@ -1,0 +1,13 @@
+﻿using B2B_Project.Application.Repositories;
+using B2B_Project.Domain.Entities;
+using B2B_Project.Persistance.Context;
+
+namespace B2B_Project.Persistance.Repositories
+{
+    public class BasketWriteRepository : WriteRepository<Basket>, IBasketWriteRepository
+    {
+        public BasketWriteRepository(B2B_ProjectDbContext context) : base(context)
+        {
+        }
+    }
+}

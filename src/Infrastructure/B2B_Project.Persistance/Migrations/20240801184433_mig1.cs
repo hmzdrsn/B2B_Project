@@ -58,9 +58,9 @@ namespace B2B_Project.Persistance.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -73,10 +73,10 @@ namespace B2B_Project.Persistance.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ParentCategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ParentCategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -90,9 +90,9 @@ namespace B2B_Project.Persistance.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -213,9 +213,9 @@ namespace B2B_Project.Persistance.Migrations
                     AppUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AppUserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -237,9 +237,9 @@ namespace B2B_Project.Persistance.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Stock = table.Column<int>(type: "int", nullable: true),
                     CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -260,9 +260,9 @@ namespace B2B_Project.Persistance.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     BasketId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -287,9 +287,9 @@ namespace B2B_Project.Persistance.Migrations
                     Quantity = table.Column<int>(type: "int", nullable: true),
                     BasketId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -314,9 +314,9 @@ namespace B2B_Project.Persistance.Migrations
                     AttributeValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AttributeTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

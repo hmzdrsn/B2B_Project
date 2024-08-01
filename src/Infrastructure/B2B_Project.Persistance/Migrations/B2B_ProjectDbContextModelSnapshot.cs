@@ -28,17 +28,17 @@ namespace B2B_Project.Persistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedDate")
+                    b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -58,16 +58,16 @@ namespace B2B_Project.Persistance.Migrations
                     b.Property<string>("AppUserId1")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedDate")
+                    b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -86,10 +86,10 @@ namespace B2B_Project.Persistance.Migrations
                     b.Property<Guid?>("BasketId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedDate")
+                    b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("ProductId")
@@ -98,7 +98,7 @@ namespace B2B_Project.Persistance.Migrations
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -116,10 +116,10 @@ namespace B2B_Project.Persistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedDate")
+                    b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -129,7 +129,7 @@ namespace B2B_Project.Persistance.Migrations
                     b.Property<Guid>("ParentCategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -143,10 +143,10 @@ namespace B2B_Project.Persistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedDate")
+                    b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("OrderDate")
@@ -155,7 +155,7 @@ namespace B2B_Project.Persistance.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -175,10 +175,10 @@ namespace B2B_Project.Persistance.Migrations
                     b.Property<Guid?>("BasketId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedDate")
+                    b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -187,7 +187,7 @@ namespace B2B_Project.Persistance.Migrations
                     b.Property<Guid?>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -208,10 +208,10 @@ namespace B2B_Project.Persistance.Migrations
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedDate")
+                    b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -227,7 +227,7 @@ namespace B2B_Project.Persistance.Migrations
                     b.Property<int?>("Stock")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -249,16 +249,16 @@ namespace B2B_Project.Persistance.Migrations
                     b.Property<string>("AttributeValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedDate")
+                    b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
