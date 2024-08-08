@@ -1,4 +1,5 @@
 ﻿using B2B_Project.Application.Features.Product.Commands.CreateProduct;
+using B2B_Project.Application.Features.Product.Queries;
 using B2B_Project.Application.Repositories;
 using B2B_Project.Domain.Entities;
 using B2B_Project.Persistance.Repositories;
@@ -14,7 +15,7 @@ namespace B2B_Project.API.Controllers
     public class ProductController : ControllerBase
     {
         //BASE CONTROLLER YAPILACAK
-        private IMediator _mediator;
+        private readonly IMediator _mediator;
 
         public ProductController(IMediator mediator)
         {
@@ -22,12 +23,14 @@ namespace B2B_Project.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAll()
         {
-            return Ok();
+            GetAllProductQueryRequest request = new GetAllProductQueryRequest();
+            var res = _mediator.Send(request);
+            return Ok(res.Result);
         }
         [HttpPost]
-        public async Task<IActionResult> AddProduct(CreateProductCommandRequest req)
+        public async Task<IActionResult> Add(CreateProductCommandRequest req)
         {
             var res =_mediator.Send(req);
             return Ok(res.Result);

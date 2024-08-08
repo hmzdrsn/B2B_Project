@@ -1,13 +1,9 @@
 ﻿using B2B_Project.Application.Repositories;
+using B2B_Project.Application.Services;
 using B2B_Project.Persistance.Context;
 using B2B_Project.Persistance.Repositories;
-using Microsoft.EntityFrameworkCore;
+using B2B_Project.Persistance.Services;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace B2B_Project.Persistance
 {
@@ -40,6 +36,12 @@ namespace B2B_Project.Persistance
 
             services.AddScoped<IProductAttributeReadRepository, ProductAttributeReadRepository>();
             services.AddScoped<IProductAttributeWriteRepository, ProductAttributeWriteRepository>();
+
+            services.AddScoped<ICompanyReadRepository, CompanyReadRepository>();
+            services.AddScoped<ICompanyWriteRepository, CompanyWriteRepository>();
+
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserService,UserService>();
         }
     }
 }

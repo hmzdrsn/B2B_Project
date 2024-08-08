@@ -57,5 +57,6 @@ namespace B2B_Project.Persistance.Context
         public DbSet<AttributeType> AttributeTypes { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<Company> Companies { get; set; }
     }
 }

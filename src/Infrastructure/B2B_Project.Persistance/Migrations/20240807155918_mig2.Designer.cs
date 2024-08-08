@@ -4,6 +4,7 @@ using B2B_Project.Persistance.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace B2B_Project.Persistance.Migrations
 {
     [DbContext(typeof(B2B_ProjectDbContext))]
-    partial class B2B_ProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240807155918_mig2")]
+    partial class mig2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,64 +138,6 @@ namespace B2B_Project.Persistance.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("B2B_Project.Domain.Entities.Company", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AppUser2Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CompanyName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactPhone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Industry")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Logo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("PrimaryAppUserID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("RegistrationNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("SecondaryAppUserID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TaxID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUser2Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("B2B_Project.Domain.Entities.Order", b =>
@@ -556,21 +501,6 @@ namespace B2B_Project.Persistance.Migrations
                     b.Navigation("Basket");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("B2B_Project.Domain.Entities.Company", b =>
-                {
-                    b.HasOne("B2B_Project.Domain.Identity.AppUser", "AppUser2")
-                        .WithMany()
-                        .HasForeignKey("AppUser2Id");
-
-                    b.HasOne("B2B_Project.Domain.Identity.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId");
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("AppUser2");
                 });
 
             modelBuilder.Entity("B2B_Project.Domain.Entities.OrderDetail", b =>
