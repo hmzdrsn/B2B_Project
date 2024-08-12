@@ -1,10 +1,5 @@
 ﻿using B2B_Project.Domain.Common;
 using B2B_Project.Domain.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace B2B_Project.Domain.Entities
 {
@@ -17,9 +12,10 @@ namespace B2B_Project.Domain.Entities
         public string? ContactEmail { get; set; }
         public string? ContactPhone { get; set; }
         public string? Logo { get; set; } //image url olablir.
-        public Guid PrimaryAppUserID { get; set; } //birincil iletişim için şirket kişisi
-        public AppUser AppUser { get; set; }
-        public Guid? SecondaryAppUserID { get; set; }//ikincil şirket kişisi
-        public AppUser? AppUser2{ get; set; }
+        public string PrimaryAppUserID { get; set; } //birincil iletişim için şirket kişisi
+        public AppUser PrimaryAppUser { get; set; }
+        public string? SecondaryAppUserID { get; set; }//ikincil şirket kişisi
+        public AppUser? SecondaryAppUser { get; set; }
+        ICollection<Product>? Products{ get; set; }
     }
 }

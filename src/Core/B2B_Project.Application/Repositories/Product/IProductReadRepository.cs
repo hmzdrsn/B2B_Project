@@ -9,5 +9,6 @@ namespace B2B_Project.Application.Repositories
 {
     public interface IProductReadRepository : IReadRepository<Product>
     {
+        IQueryable<Product> GetProductsByCompany(Guid companyId);
     }
 }

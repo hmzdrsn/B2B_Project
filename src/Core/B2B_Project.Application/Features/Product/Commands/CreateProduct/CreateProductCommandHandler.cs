@@ -22,7 +22,8 @@ namespace B2B_Project.Application.Features.Product.Commands.CreateProduct
                 Description = request.Description,
                 Price = request.Price,
                 Stock = request.Stock,
-                CategoryId = request.CategoryId != null ? Guid.Parse(request.CategoryId) : null
+                CategoryId = request.CategoryId != null ? Guid.Parse(request.CategoryId) : null,
+                CompanyId =request.CompanyId
             }))
             {
                 await _productWriteRepository.SaveAsync();

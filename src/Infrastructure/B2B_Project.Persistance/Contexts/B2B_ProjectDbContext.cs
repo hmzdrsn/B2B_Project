@@ -17,6 +17,20 @@ namespace B2B_Project.Persistance.Context
         {
             optionsBuilder.UseSqlServer("server=localhost;database=B2B_ProjectDB;Integrated Security=True;Trust Server Certificate=True");
         }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            //builder.Entity<Company>()
+            //    .HasOne(x => x.PrimaryAppUser)
+            //    .WithMany()
+            //    .HasForeignKey(x => x.PrimaryAppUserID);
+
+            //builder.Entity<Company>()
+            //    .HasOne(x => x.SecondaryAppUser)
+            //    .WithMany()
+            //    .HasForeignKey(x => x.SecondaryAppUserID);
+
+            base.OnModelCreating(builder);
+        }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entries = ChangeTracker.Entries<BaseEntity>();

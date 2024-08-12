@@ -17,7 +17,16 @@ builder.Services.AddApplicationServices();
 builder.Services.AddPersistanceServices();
 builder.Services.AddInfrastructureServices();
 
-builder.Services.AddIdentity<AppUser, AppRole>()
+builder.Services.AddIdentity<AppUser, AppRole>(opt =>
+{
+    opt.Password.RequireDigit = false;
+    opt.Password.RequiredLength = 1;
+    opt.Password.RequireNonAlphanumeric = false;
+    opt.Password.RequireUppercase= false;
+    opt.Password.RequireLowercase= false;
+
+
+})
     .AddEntityFrameworkStores<B2B_ProjectDbContext>();
     
 

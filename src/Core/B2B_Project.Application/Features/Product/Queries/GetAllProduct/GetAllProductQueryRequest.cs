@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace B2B_Project.Application.Features.Product.Queries
+namespace B2B_Project.Application.Features.Product.Queries.GetAllProduct
 {
     public class GetAllProductQueryRequest : IRequest<HandlerResponse<GetAllProductQueryResponse>>
     {

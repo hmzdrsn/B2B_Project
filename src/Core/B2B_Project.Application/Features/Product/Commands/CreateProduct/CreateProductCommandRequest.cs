@@ -18,5 +18,6 @@ namespace B2B_Project.Application.Features.Product.Commands.CreateProduct
         public Decimal? Price { get; set; }
         public int? Stock { get; set; }
         public string? CategoryId { get; set; }
+        public Guid? CompanyId { get; set; }
     }
 }

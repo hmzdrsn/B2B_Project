@@ -1,9 +1,12 @@
 ﻿using B2B_Project.Application.Features.Product.Commands.CreateProduct;
-using B2B_Project.Application.Features.Product.Queries;
+using B2B_Project.Application.Features.Product.Queries.GetAllProduct;
+using B2B_Project.Application.Features.Product.Queries.GetProductsByCategory;
+using B2B_Project.Application.Features.Product.Queries.GetProductsByCompany;
 using B2B_Project.Application.Repositories;
 using B2B_Project.Domain.Entities;
 using B2B_Project.Persistance.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +24,7 @@ namespace B2B_Project.API.Controllers
         {
             _mediator = mediator;
         }
-
+        //[Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -29,11 +32,25 @@ namespace B2B_Project.API.Controllers
             var res = _mediator.Send(request);
             return Ok(res.Result);
         }
+        //[Authorize]
         [HttpPost]
         public async Task<IActionResult> Add(CreateProductCommandRequest req)
         {
             var res =_mediator.Send(req);
             return Ok(res.Result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProductsByCompany([FromQuery] GetProductsByCompanyQueryRequest req)
+        {
+            var res =await _mediator.Send(req);
+            return Ok(res);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetProductsByCategory([FromQuery] GetProductsByCategoryQueryRequest req)
+        {
+            var res = await _mediator.Send(req);
+            return Ok(res);
         }
     }
 }

@@ -1,9 +1,4 @@
 ﻿using B2B_Project.Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace B2B_Project.Domain.Entities
 {
@@ -15,8 +10,10 @@ namespace B2B_Project.Domain.Entities
         public int? Stock { get; set; }
         public Guid? CategoryId { get; set; }
         public Category? Category { get; set; }
-        
+        public Guid? CompanyId { get; set; }
+        public Company? Company { get; set; }
         ICollection<BasketItem>? BasketItems { get; set; }
         ICollection<ProductAttribute>? ProductAttributes { get; set;}
+
     }
 }
