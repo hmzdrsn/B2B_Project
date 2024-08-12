@@ -1,12 +1,9 @@
 ﻿using B2B_Project.Application.Repositories;
 using B2B_Project.Application.Services;
 using B2B_Project.Domain.Entities;
+using B2B_Project.Domain.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace B2B_Project.Persistance.Services
 {
@@ -14,10 +11,14 @@ namespace B2B_Project.Persistance.Services
     {
         private readonly ICategoryReadRepository _categoryReadRepository;
         private readonly IProductReadRepository _productReadRepository;
-        public ProductService(ICategoryReadRepository categoryReadRepository, IProductReadRepository productReadRepository)
+        private readonly ICompanyReadRepository _companyReadRepository;
+        private readonly UserManager<AppUser> _userManager;
+        public ProductService(ICategoryReadRepository categoryReadRepository, IProductReadRepository productReadRepository, ICompanyReadRepository companyReadRepository, UserManager<AppUser> userManager)
         {
             _categoryReadRepository = categoryReadRepository;
             _productReadRepository = productReadRepository;
+            _companyReadRepository = companyReadRepository;
+            _userManager = userManager;
         }
 
         public async Task<List<Product>> GetProductsByCategoryAsync(Guid categoryId)
@@ -29,6 +30,8 @@ namespace B2B_Project.Persistance.Services
 
             return products;
         }
+
+
         private async Task<List<Guid>> GetCategoryIds(Guid id)
         {
             var idList = new List<Guid>();
@@ -51,6 +54,23 @@ namespace B2B_Project.Persistance.Services
             }
 
             return idList;
+        }
+
+       
+        public async Task<List<Product>> GetCompanyProductsByUsername(string userName)
+        {
+            var user =  await _userManager.FindByNameAsync(userName);
+
+            Guid companyID = await _companyReadRepository.Table
+                .Where(x => x.PrimaryAppUserID == user.Id || x.SecondaryAppUserID == user.Id)
+                .Select(x=>x.Id)
+                .FirstOrDefaultAsync();
+
+            var products = await _productReadRepository.Table
+                .Where(x => x.CompanyId == companyID)
+                .ToListAsync();
+
+            return products;
         }
     }
 }

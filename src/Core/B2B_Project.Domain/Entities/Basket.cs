@@ -5,10 +5,10 @@ namespace B2B_Project.Domain.Entities
 {
     public class Basket : BaseEntity
     {
-        public Guid? AppUserId { get; set; }
-        public string? Status { get; set; }
         public AppUser? AppUser { get; set; }
-        ICollection<BasketItem>? BasketItems { get; set; }
-        ICollection<OrderDetail>? OrderDetails { get; set; }
+        public string? AppUserId { get; set; }
+        public string? Status { get; set; }
+        public ICollection<BasketItem>? BasketItems { get; set; }
+        public ICollection<OrderDetail>? OrderDetails { get; set; }
     }
 }

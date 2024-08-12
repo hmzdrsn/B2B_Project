@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace B2B_Project.Application.Services
 {
-    public interface IProductService
+    public interface IBasketService
     {
-        Task<List<Product>> GetProductsByCategoryAsync(Guid categoryId);
-        Task<List<Product>> GetCompanyProductsByUsername(string userName);
-
+        Task<Basket?> GetBasketByUsername(string username);
     }
 }

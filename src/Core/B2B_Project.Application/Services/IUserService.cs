@@ -1,4 +1,5 @@
 ﻿using B2B_Project.Application.DTOs.User;
+using B2B_Project.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
