@@ -26,11 +26,11 @@ namespace B2B_Project.API.Controllers
         }
         //[Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             GetAllProductQueryRequest request = new GetAllProductQueryRequest();
-            var res = _mediator.Send(request);
-            return Ok(res.Result);
+            var res =await _mediator.Send(request);
+            return Ok(res);
         }
         //[Authorize]
         [HttpPost]

@@ -10,6 +10,7 @@ namespace B2B_Project.Application.Features.Basket.Queries
 
         public GetBasketByUsernameQueryHandler(IBasketService basketService)
         {
+            
             _basketService = basketService;
         }
 
