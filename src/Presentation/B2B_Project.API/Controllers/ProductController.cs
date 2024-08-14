@@ -1,5 +1,6 @@
 ﻿using B2B_Project.Application.Features.Product.Commands.CreateProduct;
 using B2B_Project.Application.Features.Product.Queries.GetAllProduct;
+using B2B_Project.Application.Features.Product.Queries.GetCompanyProductsByUsername;
 using B2B_Project.Application.Features.Product.Queries.GetProductsByCategory;
 using B2B_Project.Application.Features.Product.Queries.GetProductsByCompany;
 using B2B_Project.Application.Repositories;
@@ -32,9 +33,16 @@ namespace B2B_Project.API.Controllers
             var res =await _mediator.Send(request);
             return Ok(res);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCompanyProducts([FromQuery] GetCompanyProductsByUsernameQueryRequest req)
+        {
+            var data = await _mediator.Send(req);
+            return Ok(data);
+        }
         //[Authorize]
         [HttpPost]
-        public async Task<IActionResult> Add(CreateProductCommandRequest req)
+        public async Task<IActionResult> CreateProduct(CreateProductCommandRequest req)
         {
             var res =_mediator.Send(req);
             return Ok(res.Result);

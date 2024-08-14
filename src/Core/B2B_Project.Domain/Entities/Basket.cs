@@ -9,6 +9,5 @@ namespace B2B_Project.Domain.Entities
         public string? AppUserId { get; set; }
         public string? Status { get; set; }
         public ICollection<BasketItem>? BasketItems { get; set; }
-        public ICollection<OrderDetail>? OrderDetails { get; set; }
     }
 }

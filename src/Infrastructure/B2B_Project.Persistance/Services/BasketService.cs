@@ -5,11 +5,6 @@ using B2B_Project.Domain.Entities;
 using B2B_Project.Domain.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace B2B_Project.Persistance.Services
 {
@@ -20,12 +15,13 @@ namespace B2B_Project.Persistance.Services
         private readonly IBasketWriteRepository _basketWriteRepository;
         private readonly IBasketItemWriteRepository _basketItemWriteRepository;
         private readonly IProductReadRepository _productReadRepository;
-        public BasketService(UserManager<AppUser> userManager, IBasketReadRepository basketReadRepository, IProductReadRepository productReadRepository, IBasketItemWriteRepository basketItemWriteRepository)
+        public BasketService(UserManager<AppUser> userManager, IBasketReadRepository basketReadRepository, IProductReadRepository productReadRepository, IBasketItemWriteRepository basketItemWriteRepository, IBasketWriteRepository basketWriteRepository)
         {
             _userManager = userManager;
             _basketReadRepository = basketReadRepository;
             _productReadRepository = productReadRepository;
             _basketItemWriteRepository = basketItemWriteRepository;
+            _basketWriteRepository = basketWriteRepository;
         }
 
         public async Task<bool> AddProductToBasket(AddProductToBasket model)
@@ -49,11 +45,11 @@ namespace B2B_Project.Persistance.Services
                 {
                     AppUserId = user.Id,
                     Status = "Aktif",
-                    BasketItems = new List<BasketItem>()
+                    //BasketItems = new List<BasketItem>()
                 };
 
                 var result = await _basketWriteRepository.AddAsync(newBasket);
-                await _basketItemWriteRepository.SaveAsync();
+                await _basketWriteRepository.SaveAsync();
                 if (result)
                 {
                     // Sepete yeni bir ürün ekle

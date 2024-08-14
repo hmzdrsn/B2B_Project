@@ -12,7 +12,7 @@ namespace B2B_Project.Domain.Entities
         public Category? Category { get; set; }
         public Guid? CompanyId { get; set; }
         public Company? Company { get; set; }
-        ICollection<BasketItem>? BasketItems { get; set; }
+        ICollection<OrderDetail>? OrderDetails { get; set; }
         ICollection<ProductAttribute>? ProductAttributes { get; set;}
 
     }
