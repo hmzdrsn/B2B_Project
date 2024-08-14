@@ -3,7 +3,7 @@ using B2B_Project.Application.Services;
 using B2B_Project.Domain.Entities;
 using MediatR;
 
-namespace B2B_Project.Application.Features.Order.Queries
+namespace B2B_Project.Application.Features.Order.Queries.GetOrdersByCompany
 {
     public class GetOrdersByCompanyQueryHandler : IRequestHandler<GetOrdersByCompanyQueryRequest, HandlerResponse<GetOrdersByCompanyQueryResponse>>
     {
@@ -17,7 +17,7 @@ namespace B2B_Project.Application.Features.Order.Queries
         public async Task<HandlerResponse<GetOrdersByCompanyQueryResponse>> Handle(GetOrdersByCompanyQueryRequest request, CancellationToken cancellationToken)
         {
             var data = await _orderService.GetOrdersByCompany(request.Username);
-            if (data!=null)
+            if (data != null)
             {
                 GetOrdersByCompanyQueryResponse response = new()
                 {

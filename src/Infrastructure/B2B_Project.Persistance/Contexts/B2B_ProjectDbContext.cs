@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace B2B_Project.Persistance.Context
 {
-    public class B2B_ProjectDbContext : IdentityDbContext<AppUser,AppRole,string>
+    public class B2B_ProjectDbContext : IdentityDbContext<AppUser, AppRole, string>
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -19,15 +19,14 @@ namespace B2B_Project.Persistance.Context
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //builder.Entity<Company>()
-            //    .HasOne(x => x.PrimaryAppUser)
+            //builder.Entity<Order>()
+            //       .HasOne(x => x.OrderStatus)
+            //       .WithMany() // OrderStatus diğer tarafı tutmayacak
+            //       .HasForeignKey(x => x.OrderStatusId);
+            //builder.Entity<OrderStatus>()
+            //    .HasOne(x => x.Order)
             //    .WithMany()
-            //    .HasForeignKey(x => x.PrimaryAppUserID);
-
-            //builder.Entity<Company>()
-            //    .HasOne(x => x.SecondaryAppUser)
-            //    .WithMany()
-            //    .HasForeignKey(x => x.SecondaryAppUserID);
+            //    .HasForeignKey(x => x.OrderId);
 
             base.OnModelCreating(builder);
         }
@@ -41,7 +40,7 @@ namespace B2B_Project.Persistance.Context
 
                 switch (item.State)
                 {
-                    
+
                     case EntityState.Deleted:
                         item.Entity.DeletedDate = DateTime.Now;
                         break;
@@ -72,5 +71,6 @@ namespace B2B_Project.Persistance.Context
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<OrderStatus> OrderStatus { get; set; }
     }
 }

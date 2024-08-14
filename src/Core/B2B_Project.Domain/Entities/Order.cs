@@ -11,6 +11,8 @@ namespace B2B_Project.Domain.Entities
         public decimal TotalPrice { get; set; }
         public DateTime OrderDate { get; set; }
         //eklenirse indiirm oranı burada olabilir.
+        public Guid? OrderStatusId { get; set; }
+        public OrderStatus OrderStatus { get; set; }
         public ICollection<OrderDetail>? OrderDetails { get; set; }
     }
 }

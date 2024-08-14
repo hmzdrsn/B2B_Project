@@ -1,5 +1,5 @@
 ﻿using B2B_Project.Application.Features.Order.Commands.CreateOrder;
-using B2B_Project.Application.Features.Order.Queries;
+using B2B_Project.Application.Features.Order.Queries.GetOrdersByCompany;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

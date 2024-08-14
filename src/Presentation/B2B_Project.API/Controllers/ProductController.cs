@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace B2B_Project.API.Controllers
 {
@@ -25,7 +26,7 @@ namespace B2B_Project.API.Controllers
         {
             _mediator = mediator;
         }
-        //[Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -34,9 +35,14 @@ namespace B2B_Project.API.Controllers
             return Ok(res);
         }
 
+
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
-        public async Task<IActionResult> GetCompanyProducts([FromQuery] GetCompanyProductsByUsernameQueryRequest req)
+        public async Task<IActionResult> GetCompanyProducts()
         {
+            GetCompanyProductsByUsernameQueryRequest req = new();
+
+            req.Username = User.FindFirstValue(ClaimTypes.Name);
             var data = await _mediator.Send(req);
             return Ok(data);
         }
@@ -48,7 +54,7 @@ namespace B2B_Project.API.Controllers
             return Ok(res.Result);
         }
 
-        [HttpGet]
+        [HttpGet]//silinebilir olan
         public async Task<IActionResult> GetProductsByCompany([FromQuery] GetProductsByCompanyQueryRequest req)
         {
             var res =await _mediator.Send(req);

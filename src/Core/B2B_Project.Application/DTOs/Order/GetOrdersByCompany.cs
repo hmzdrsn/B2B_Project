@@ -5,5 +5,6 @@
         public string Name { get; set; }
         public decimal TotalPrice { get; set; }
         public DateOnly OrderDate{ get; set; }
+        public string OrderStatus { get; set; }
     }
 }

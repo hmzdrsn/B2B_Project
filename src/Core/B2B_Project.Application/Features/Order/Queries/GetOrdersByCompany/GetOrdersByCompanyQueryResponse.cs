@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace B2B_Project.Application.Features.Order.Queries
+namespace B2B_Project.Application.Features.Order.Queries.GetOrdersByCompany
 {
     public class GetOrdersByCompanyQueryResponse
     {
-        public List<GetOrdersByCompany>? Orders { get; set; }
+        public List<DTOs.Order.GetOrdersByCompany>? Orders { get; set; }
     }
 
 }

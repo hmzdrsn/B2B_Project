@@ -37,6 +37,9 @@ namespace B2B_Project.Persistance
             services.AddScoped<IProductAttributeReadRepository, ProductAttributeReadRepository>();
             services.AddScoped<IProductAttributeWriteRepository, ProductAttributeWriteRepository>();
 
+            services.AddScoped<IOrderStatusReadRepository, OrderStatusReadRepository>();
+            services.AddScoped<IOrderStatusWriteRepository, OrderStatusWriteRepository>();
+
             services.AddScoped<ICompanyReadRepository, CompanyReadRepository>();
             services.AddScoped<ICompanyWriteRepository, CompanyWriteRepository>();
 

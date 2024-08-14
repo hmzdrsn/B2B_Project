@@ -15,15 +15,17 @@ namespace B2B_Project.Persistance.Services
         private readonly IOrderReadRepository _orderReadRepository;
         private readonly IBasketReadRepository _basketReadRepository;
         private readonly ICompanyReadRepository _companyReadRepository;
+        private readonly IOrderStatusReadRepository _orderStatusReadRepository;
         private readonly UserManager<AppUser> _userManager;
 
-        public OrderService(IOrderWriteRepository orderWriteRepository, UserManager<AppUser> userManager, IBasketReadRepository basketReadRepository, IOrderReadRepository orderReadRepository, ICompanyReadRepository companyReadRepository)
+        public OrderService(IOrderWriteRepository orderWriteRepository, UserManager<AppUser> userManager, IBasketReadRepository basketReadRepository, IOrderReadRepository orderReadRepository, ICompanyReadRepository companyReadRepository, IOrderStatusReadRepository orderStatusReadRepository)
         {
             _orderWriteRepository = orderWriteRepository;
             _userManager = userManager;
             _basketReadRepository = basketReadRepository;
             _orderReadRepository = orderReadRepository;
             _companyReadRepository = companyReadRepository;
+            _orderStatusReadRepository = orderStatusReadRepository;
         }
 
         public async Task<bool> CreateOrderAsync(CreateOrder model)
@@ -50,13 +52,15 @@ namespace B2B_Project.Persistance.Services
                 return false;
             }
 
+            var OrderStatus = await _orderStatusReadRepository.GetByIdAsync(model.OrderStatusId);
+
             //order olustur, order detail olusurken icerisindeki quantity ve UnitPrice degerlerini set et.
             Order order = new Order();
             order.AppUserId = user.Id;
             order.Address = model.Address;
             order.TotalPrice = TotalPrice;
             order.OrderDate = DateTime.Now;
-
+            order.OrderStatus = OrderStatus;
             //order detail list olusturuldu
             List<OrderDetail> orderDetailList = new();
             foreach (var basketItem in basket.BasketItems)
@@ -94,6 +98,7 @@ namespace B2B_Project.Persistance.Services
             if (company != null)//productın companyid'si company.id olanları getir.
             {
                 var orders = await _orderReadRepository.GetAll()
+                                .Include(x=>x.OrderStatus)
                                 .Include(x => x.AppUser)
                                 .Include(x => x.OrderDetails)
                                 .ThenInclude(p => p.Product)
@@ -102,7 +107,8 @@ namespace B2B_Project.Persistance.Services
                                 {
                                     Name = x.AppUser.Name,
                                     TotalPrice = x.TotalPrice,
-                                    OrderDate = DateOnly.FromDateTime(x.OrderDate)
+                                    OrderDate = DateOnly.FromDateTime(x.OrderDate),
+                                    OrderStatus = x.OrderStatus.Status
                                 })
                                 .ToListAsync();
                 return orders;

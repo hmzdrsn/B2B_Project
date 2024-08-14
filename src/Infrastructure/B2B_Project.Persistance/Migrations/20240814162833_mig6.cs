@@ -45,6 +45,12 @@ namespace B2B_Project.Persistance.Migrations
                 nullable: false,
                 defaultValue: "");
 
+            migrationBuilder.AddColumn<Guid>(
+                name: "OrderStatusId",
+                table: "Orders",
+                type: "uniqueidentifier",
+                nullable: true);
+
             migrationBuilder.AddColumn<DateTime>(
                 name: "OrderDate",
                 table: "OrderDetails",
@@ -73,10 +79,30 @@ namespace B2B_Project.Persistance.Migrations
                 nullable: false,
                 defaultValue: 0m);
 
+            migrationBuilder.CreateTable(
+                name: "OrderStatus",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderStatus", x => x.Id);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_AppUserId",
                 table: "Orders",
                 column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_OrderStatusId",
+                table: "Orders",
+                column: "OrderStatusId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_ProductId",
@@ -98,6 +124,13 @@ namespace B2B_Project.Persistance.Migrations
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Orders_OrderStatus_OrderStatusId",
+                table: "Orders",
+                column: "OrderStatusId",
+                principalTable: "OrderStatus",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
@@ -111,8 +144,19 @@ namespace B2B_Project.Persistance.Migrations
                 name: "FK_Orders_AspNetUsers_AppUserId",
                 table: "Orders");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Orders_OrderStatus_OrderStatusId",
+                table: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "OrderStatus");
+
             migrationBuilder.DropIndex(
                 name: "IX_Orders_AppUserId",
+                table: "Orders");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Orders_OrderStatusId",
                 table: "Orders");
 
             migrationBuilder.DropIndex(
@@ -125,6 +169,10 @@ namespace B2B_Project.Persistance.Migrations
 
             migrationBuilder.DropColumn(
                 name: "AppUserId",
+                table: "Orders");
+
+            migrationBuilder.DropColumn(
+                name: "OrderStatusId",
                 table: "Orders");
 
             migrationBuilder.DropColumn(
