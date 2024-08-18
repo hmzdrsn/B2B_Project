@@ -16,7 +16,7 @@ namespace B2B_Project.Application.Features.User.Commands.LoginUser
         public async Task<HandlerResponse<LoginUserCommandResponse>> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
             LoginUserCommandResponse response = new()
-            { Token = await _authService.LoginAsync(request.Username, request.Password, 600) };
+            { Token = await _authService.LoginAsync(request.Username, request.Password, 15000) };
             return new()
             {
                 Data = response,

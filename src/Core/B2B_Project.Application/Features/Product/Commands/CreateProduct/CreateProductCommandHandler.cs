@@ -1,32 +1,36 @@
 ﻿using B2B_Project.Application.Common.Models;
 using B2B_Project.Application.Repositories;
+using B2B_Project.Application.Services;
 using B2B_Project.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace B2B_Project.Application.Features.Product.Commands.CreateProduct
 {
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest, HandlerResponse<CreateProductCommandResponse>>
     {
-        private readonly IProductWriteRepository _productWriteRepository;
+        private readonly IProductService _productService;
 
-        public CreateProductCommandHandler(IProductWriteRepository productWriteRepository)
+        public CreateProductCommandHandler(IProductService productService)
         {
-            _productWriteRepository = productWriteRepository;
+            _productService = productService;
         }
 
         public async Task<HandlerResponse<CreateProductCommandResponse>> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
         {
-            if (await _productWriteRepository.AddAsync(new()
+            bool res = await _productService.CreateProductAsync(new()
             {
                 Name = request.Name,
                 Description = request.Description,
                 Price = request.Price,
+                ProductCode = request.ProductCode,
                 Stock = request.Stock,
-                CategoryId = request.CategoryId != null ? Guid.Parse(request.CategoryId) : null,
-                CompanyId =request.CompanyId
-            }))
+                CategoryId = request.CategoryId,
+                CompanyId = request.CompanyId,
+                ProductImages = request.ProductImages
+            });
+            if (res)
             {
-                await _productWriteRepository.SaveAsync();
                 return new()
                 {
                     Message = "Product Successfully Added.",

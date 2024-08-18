@@ -11,15 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{9763DF66-1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{B143637E-26AB-4733-9B7E-C3C27AA57D31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "B2B_Project.Application", "src\Core\B2B_Project.Application\B2B_Project.Application.csproj", "{76348207-A383-40C8-88C2-D8922CAEE1AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "B2B_Project.Application", "src\Core\B2B_Project.Application\B2B_Project.Application.csproj", "{76348207-A383-40C8-88C2-D8922CAEE1AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "B2B_Project.Domain", "src\Core\B2B_Project.Domain\B2B_Project.Domain.csproj", "{E8AA5F6B-9E6F-45E7-84B1-9D097C334B7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "B2B_Project.Domain", "src\Core\B2B_Project.Domain\B2B_Project.Domain.csproj", "{E8AA5F6B-9E6F-45E7-84B1-9D097C334B7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "B2B_Project.Infrastructure", "src\Infrastructure\B2B_Project.Infrastructure\B2B_Project.Infrastructure.csproj", "{47C4AB02-90A5-4A80-B3C1-D8A8635522FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "B2B_Project.Infrastructure", "src\Infrastructure\B2B_Project.Infrastructure\B2B_Project.Infrastructure.csproj", "{47C4AB02-90A5-4A80-B3C1-D8A8635522FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "B2B_Project.Persistance", "src\Infrastructure\B2B_Project.Persistance\B2B_Project.Persistance.csproj", "{BE6CD6E9-F775-4E58-AE1A-3BDC41F08F35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "B2B_Project.Persistance", "src\Infrastructure\B2B_Project.Persistance\B2B_Project.Persistance.csproj", "{BE6CD6E9-F775-4E58-AE1A-3BDC41F08F35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "B2B_Project.API", "src\Presentation\B2B_Project.API\B2B_Project.API.csproj", "{A527B6D5-4745-4A5E-97AF-8355E12CD74C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "B2B_Project.API", "src\Presentation\B2B_Project.API\B2B_Project.API.csproj", "{A527B6D5-4745-4A5E-97AF-8355E12CD74C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

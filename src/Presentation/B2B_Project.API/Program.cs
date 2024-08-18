@@ -1,15 +1,13 @@
 using B2B_Project.Application;
 using B2B_Project.Domain.Identity;
-using B2B_Project.Persistance;
 using B2B_Project.Infrastructure;
+using B2B_Project.Persistance;
 using B2B_Project.Persistance.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 

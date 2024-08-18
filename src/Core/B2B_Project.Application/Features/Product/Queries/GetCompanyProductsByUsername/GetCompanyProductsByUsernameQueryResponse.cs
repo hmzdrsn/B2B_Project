@@ -9,6 +9,6 @@ namespace B2B_Project.Application.Features.Product.Queries.GetCompanyProductsByU
 {
     public class GetCompanyProductsByUsernameQueryResponse
     {
-        public List<DTOs.Product.GetCompanyProductsByUsername>? Products { get; set; }
+        public List<DTOs.Product.GetCompanyProductsByUsernameDto>? Products { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace B2B_Project.Application.Features.Product.Queries.GetAllProduct
         public async Task<HandlerResponse<GetAllProductQueryResponse>> Handle(GetAllProductQueryRequest request, CancellationToken cancellationToken)
         {
             var data = await _productReadRepository.GetAll()
-                .Select(product => new DTOs.Product.GetAllProduct()
+                .Select(product => new DTOs.Product.GetAllProductDto()
                 {
                     Name = product.Name,
                     Description = product.Description,

@@ -1,9 +1,5 @@
-﻿using B2B_Project.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using B2B_Project.Application.DTOs.Product;
+using B2B_Project.Domain.Entities;
 
 namespace B2B_Project.Application.Services
 {
@@ -11,6 +7,6 @@ namespace B2B_Project.Application.Services
     {
         Task<List<Product>> GetProductsByCategoryAsync(Guid categoryId);
         Task<List<Product>> GetCompanyProductsByUsername(string userName);
-
+        Task<bool> CreateProductAsync(CreateProductDto model);
     }
 }

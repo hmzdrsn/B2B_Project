@@ -3,7 +3,6 @@ using B2B_Project.Application.Repositories;
 using B2B_Project.Application.Services;
 using B2B_Project.Domain.Entities;
 using B2B_Project.Domain.Identity;
-using B2B_Project.Persistance.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +25,13 @@ namespace B2B_Project.Persistance.Services
             _orderReadRepository = orderReadRepository;
             _companyReadRepository = companyReadRepository;
             _orderStatusReadRepository = orderStatusReadRepository;
+        }
+
+        public async Task<string> CreateOrderCode()
+        {
+            int orderCount =await _orderReadRepository.Table.CountAsync() + 1;
+
+            return orderCount.ToString("D10");
         }
 
         public async Task<bool> CreateOrderAsync(CreateOrder model)
@@ -61,6 +67,7 @@ namespace B2B_Project.Persistance.Services
             order.TotalPrice = TotalPrice;
             order.OrderDate = DateTime.Now;
             order.OrderStatus = OrderStatus;
+            order.OrderCode =await CreateOrderCode();
             //order detail list olusturuldu
             List<OrderDetail> orderDetailList = new();
             foreach (var basketItem in basket.BasketItems)
@@ -98,7 +105,7 @@ namespace B2B_Project.Persistance.Services
             if (company != null)//productın companyid'si company.id olanları getir.
             {
                 var orders = await _orderReadRepository.GetAll()
-                                .Include(x=>x.OrderStatus)
+                                .Include(x => x.OrderStatus)
                                 .Include(x => x.AppUser)
                                 .Include(x => x.OrderDetails)
                                 .ThenInclude(p => p.Product)

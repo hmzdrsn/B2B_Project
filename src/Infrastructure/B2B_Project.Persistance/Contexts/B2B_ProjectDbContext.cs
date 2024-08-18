@@ -72,5 +72,6 @@ namespace B2B_Project.Persistance.Context
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<OrderStatus> OrderStatus { get; set; }
+        public DbSet<Image> Images { get; set; }
     }
 }

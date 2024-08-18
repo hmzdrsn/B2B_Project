@@ -8,6 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <_WebToolingArtifacts Remove="properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MediatR" Version="12.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
     <PackageReference Include="microsoft.entityframeworkcore.design" Version="8.0.7">
@@ -21,6 +29,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\B2B_Project.Infrastructure\B2B_Project.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\B2B_Project.Persistance\B2B_Project.Persistance.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="wwwroot\images\Product\" />
   </ItemGroup>
 
 </Project>

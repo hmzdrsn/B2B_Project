@@ -32,7 +32,7 @@ namespace B2B_Project.Application.Features.Product.Queries.GetProductsByCategory
             //    .ToListAsync();
             var data = await _productService.GetProductsByCategoryAsync(request.CategoryId);
 
-            var filteredProducts = data.Select(x => new DTOs.Product.GetProductsByCategory()
+            var filteredProducts = data.Select(x => new DTOs.Product.GetProductsByCategoryDto()
             {
                 Name = x.Name,
                 Description = x.Description,

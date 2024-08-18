@@ -2,7 +2,6 @@
 using B2B_Project.Application.Features.Order.Queries.GetOrdersByCompany;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -37,5 +36,6 @@ namespace B2B_Project.API.Controllers
             var res = await _mediator.Send(request);
             return Ok(res);
         }
+
     }
 }

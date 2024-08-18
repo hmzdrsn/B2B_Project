@@ -17,8 +17,9 @@ namespace B2B_Project.Application.Features.Product.Queries.GetCompanyProductsByU
         public async Task<HandlerResponse<GetCompanyProductsByUsernameQueryResponse>> Handle(GetCompanyProductsByUsernameQueryRequest request, CancellationToken cancellationToken)
         {
             var products = await _productService.GetCompanyProductsByUsername(request.Username);
-            var filteredProducts = products.Select(x => new DTOs.Product.GetCompanyProductsByUsername()
+            var filteredProducts = products.Select(x => new DTOs.Product.GetCompanyProductsByUsernameDto()
             {
+                ProductId =x.Id,
                 Name = x.Name,
                 Description = x.Description,
                 Price  =x.Price,

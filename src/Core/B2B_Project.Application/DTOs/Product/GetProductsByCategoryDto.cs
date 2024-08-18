@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace B2B_Project.Application.DTOs.Product
 {
-    public class GetProductsByCategory
+    public class GetProductsByCategoryDto
     {
         public string Name { get; set; }
         public string? Description { get; set; }

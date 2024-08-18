@@ -1,9 +1,13 @@
-﻿using B2B_Project.Application.Repositories;
+﻿using B2B_Project.Application;
+using B2B_Project.Application.DTOs.Product;
+using B2B_Project.Application.Repositories;
 using B2B_Project.Application.Services;
 using B2B_Project.Domain.Entities;
 using B2B_Project.Domain.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace B2B_Project.Persistance.Services
 {
@@ -11,14 +15,18 @@ namespace B2B_Project.Persistance.Services
     {
         private readonly ICategoryReadRepository _categoryReadRepository;
         private readonly IProductReadRepository _productReadRepository;
+        private readonly IProductWriteRepository _productWriteRepository;
         private readonly ICompanyReadRepository _companyReadRepository;
+        private readonly IImageWriteRepository _imageWriteRepository;
         private readonly UserManager<AppUser> _userManager;
-        public ProductService(ICategoryReadRepository categoryReadRepository, IProductReadRepository productReadRepository, ICompanyReadRepository companyReadRepository, UserManager<AppUser> userManager)
+        public ProductService(ICategoryReadRepository categoryReadRepository, IProductReadRepository productReadRepository, ICompanyReadRepository companyReadRepository, UserManager<AppUser> userManager, IProductWriteRepository productWriteRepository, IImageWriteRepository imageWriteRepository)
         {
             _categoryReadRepository = categoryReadRepository;
             _productReadRepository = productReadRepository;
             _companyReadRepository = companyReadRepository;
             _userManager = userManager;
+            _productWriteRepository = productWriteRepository;
+            _imageWriteRepository = imageWriteRepository;
         }
 
         public async Task<List<Product>> GetProductsByCategoryAsync(Guid categoryId)
@@ -67,10 +75,70 @@ namespace B2B_Project.Persistance.Services
                 .FirstOrDefaultAsync();
 
             var products = await _productReadRepository.Table
-                .Where(x => x.CompanyId == companyID)
+                .Where(x => x.CompanyId == companyID && x.DeletedDate==null)
+                .OrderBy(x=>x.CreatedDate)
                 .ToListAsync();
 
             return products;
         }
+        public async Task<bool> CreateProductAsync(CreateProductDto model)
+        {
+            Product p = new()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                Price = model.Price,
+                Stock = model.Stock,
+                ProductCode = model.ProductCode,
+                CategoryId = model.CategoryId,
+                CompanyId = model.CompanyId
+            };
+
+            await _productWriteRepository.AddAsync(p);
+            int res = await _productWriteRepository.SaveAsync();
+
+            if (res > 0)
+            {
+                if (model.ProductImages != null && model.ProductImages.Any())
+                {
+                    foreach (var item in model.ProductImages)
+                    {
+                        if (!string.IsNullOrEmpty(item.FileName))
+                        {
+                            string directory = Path.Combine("wwwroot", "images", p.GetType().Name);
+                            //{DateTime.UtcNow:yyyyMMdd}
+                            string fileName = $"{p.Id}_{item.FileName}";
+                            string filePath = Path.Combine(directory, fileName);
+
+                            if (!Directory.Exists(directory))
+                            {
+                                Directory.CreateDirectory(directory);
+                            }
+
+                            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await item.CopyToAsync(stream);
+                            }
+
+                            Image img = new()
+                            {
+                                ImageName = item.FileName,
+                                ImageUrl = filePath,
+                                EntityType = p.GetType().Name,
+                                EntityId = p.Id.ToString()
+                            };
+                            await _imageWriteRepository.AddAsync(img);
+                        }
+                    }
+
+                    await _imageWriteRepository.SaveAsync();
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
     }
 }

@@ -28,8 +28,9 @@ namespace B2B_Project.Persistance.Repositories
 
         public bool Remove(T entity)
         {
-            EntityEntry entityEntry =  Table.Remove(entity);
-            return entityEntry.State == EntityState.Deleted;
+            entity.DeletedDate = DateTime.Now;
+            EntityEntry entityEntry =  Table.Update(entity);
+            return entityEntry.State == EntityState.Modified;
         }
         public bool Update(T entity)
         {

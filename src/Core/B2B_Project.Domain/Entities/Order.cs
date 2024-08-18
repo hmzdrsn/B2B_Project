@@ -9,6 +9,7 @@ namespace B2B_Project.Domain.Entities
         public AppUser AppUser { get; set; }
         public string Address { get; set; }
         public decimal TotalPrice { get; set; }
+        public string OrderCode { get; set; }
         public DateTime OrderDate { get; set; }
         //eklenirse indiirm oranı burada olabilir.
         public Guid? OrderStatusId { get; set; }

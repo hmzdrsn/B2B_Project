@@ -1,4 +1,5 @@
-﻿using B2B_Project.Application.Repositories;
+﻿using B2B_Project.Application;
+using B2B_Project.Application.Repositories;
 using B2B_Project.Application.Services;
 using B2B_Project.Persistance.Context;
 using B2B_Project.Persistance.Repositories;
@@ -33,6 +34,9 @@ namespace B2B_Project.Persistance
 
             services.AddScoped<IOrderDetailReadRepository, OrderDetailReadRepository>();
             services.AddScoped<IOrderDetailWriteRepository, OrderDetailWriteRepository>();
+
+            services.AddScoped<IImageReadRepository, ImageReadRepository>();
+            services.AddScoped<IImageWriteRepository, ImageWriteRepository>();
 
             services.AddScoped<IProductAttributeReadRepository, ProductAttributeReadRepository>();
             services.AddScoped<IProductAttributeWriteRepository, ProductAttributeWriteRepository>();

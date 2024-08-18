@@ -8,6 +8,6 @@ namespace B2B_Project.Application.Features.Product.Queries.GetProductsByCategory
 {
     public class GetProductsByCategoryQueryResponse
     {
-        public List<DTOs.Product.GetProductsByCategory>? Products { get; set; }
+        public List<DTOs.Product.GetProductsByCategoryDto>? Products { get; set; }
     }
 }

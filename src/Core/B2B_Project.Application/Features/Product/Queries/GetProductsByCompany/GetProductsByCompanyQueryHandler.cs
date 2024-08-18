@@ -17,7 +17,7 @@ namespace B2B_Project.Application.Features.Product.Queries.GetProductsByCompany
         public async Task<HandlerResponse<GetProductsByCompanyQueryResponse>> Handle(GetProductsByCompanyQueryRequest request, CancellationToken cancellationToken)
         {
             var data = await _productReadRepository.GetProductsByCompany(request.CompanyId)
-                .Select(x=> new DTOs.Product.GetProductsByCompany()
+                .Select(x=> new DTOs.Product.GetProductsByCompanyDto()
                 {
                     Name = x.Name,
                     Description = x.Description,
