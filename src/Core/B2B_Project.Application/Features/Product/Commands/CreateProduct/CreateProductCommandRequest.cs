@@ -1,13 +1,6 @@
 ﻿using B2B_Project.Application.Common.Models;
-using B2B_Project.Application.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace B2B_Project.Application.Features.Product.Commands.CreateProduct
 {
