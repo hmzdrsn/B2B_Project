@@ -4,6 +4,7 @@ using B2B_Project.Application.Services;
 using B2B_Project.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace B2B_Project.Application.Features.Product.Commands.CreateProduct
 {
@@ -11,7 +12,7 @@ namespace B2B_Project.Application.Features.Product.Commands.CreateProduct
     {
         private readonly IProductService _productService;
 
-        public CreateProductCommandHandler(IProductService productService)
+        public CreateProductCommandHandler(IProductService productService, ICompanyReadRepository companyReadRepository)
         {
             _productService = productService;
         }
@@ -26,7 +27,7 @@ namespace B2B_Project.Application.Features.Product.Commands.CreateProduct
                 ProductCode = request.ProductCode,
                 Stock = request.Stock,
                 CategoryId = request.CategoryId,
-                CompanyId = request.CompanyId,
+                Username = request.Username,
                 ProductImages = request.ProductImages
             });
             if (res)

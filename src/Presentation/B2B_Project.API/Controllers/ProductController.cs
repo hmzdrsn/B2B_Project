@@ -1,4 +1,6 @@
 ﻿using B2B_Project.Application.Features.Product.Commands.CreateProduct;
+using B2B_Project.Application.Features.Product.Commands.RemoveProduct;
+using B2B_Project.Application.Features.Product.Commands.UpdateProduct;
 using B2B_Project.Application.Features.Product.Queries.GetAllProduct;
 using B2B_Project.Application.Features.Product.Queries.GetCompanyProductsByUsername;
 using B2B_Project.Application.Features.Product.Queries.GetProductsByCategory;
@@ -41,22 +43,36 @@ namespace B2B_Project.API.Controllers
             var data = await _mediator.Send(req);
             return Ok(data);
         }
-        //[Authorize]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductCommandRequest req)
         {
-            var res =_mediator.Send(req);
+
+            req.Username = User.FindFirstValue(ClaimTypes.Name);
+            var res = _mediator.Send(req);
             return Ok(res.Result);
         }
 
         [HttpGet]//silinebilir olan
         public async Task<IActionResult> GetProductsByCompany([FromQuery] GetProductsByCompanyQueryRequest req)
         {
-            var res =await _mediator.Send(req);
+            var res = await _mediator.Send(req);
             return Ok(res);
         }
         [HttpGet]
         public async Task<IActionResult> GetProductsByCategory([FromQuery] GetProductsByCategoryQueryRequest req)
+        {
+            var res = await _mediator.Send(req);
+            return Ok(res);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateProduct(UpdateProductCommandRequest req)
+        {
+            var res = await _mediator.Send(req);
+            return Ok(res);
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteById([FromQuery] RemoveProductCommandRequest req)
         {
             var res = await _mediator.Send(req);
             return Ok(res);

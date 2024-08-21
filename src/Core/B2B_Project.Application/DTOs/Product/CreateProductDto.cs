@@ -10,7 +10,7 @@ namespace B2B_Project.Application.DTOs.Product
         public string ProductCode { get; set; } //
         public int? Stock { get; set; }
         public Guid? CategoryId { get; set; }
-        public Guid? CompanyId { get; set; }
+        public string? Username { get; set; }
         public List<IFormFile>? ProductImages { get; set; }
     }
 }

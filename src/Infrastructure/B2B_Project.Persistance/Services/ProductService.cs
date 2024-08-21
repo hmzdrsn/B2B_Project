@@ -1,5 +1,6 @@
 ﻿using B2B_Project.Application;
 using B2B_Project.Application.DTOs.Product;
+using B2B_Project.Application.Features.Product.Commands.UpdateProduct;
 using B2B_Project.Application.Repositories;
 using B2B_Project.Application.Services;
 using B2B_Project.Domain.Entities;
@@ -7,7 +8,6 @@ using B2B_Project.Domain.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
 
 namespace B2B_Project.Persistance.Services
 {
@@ -18,8 +18,9 @@ namespace B2B_Project.Persistance.Services
         private readonly IProductWriteRepository _productWriteRepository;
         private readonly ICompanyReadRepository _companyReadRepository;
         private readonly IImageWriteRepository _imageWriteRepository;
+        private readonly IImageReadRepository _imageReadRepository;
         private readonly UserManager<AppUser> _userManager;
-        public ProductService(ICategoryReadRepository categoryReadRepository, IProductReadRepository productReadRepository, ICompanyReadRepository companyReadRepository, UserManager<AppUser> userManager, IProductWriteRepository productWriteRepository, IImageWriteRepository imageWriteRepository)
+        public ProductService(ICategoryReadRepository categoryReadRepository, IProductReadRepository productReadRepository, ICompanyReadRepository companyReadRepository, UserManager<AppUser> userManager, IProductWriteRepository productWriteRepository, IImageWriteRepository imageWriteRepository, IImageReadRepository imageReadRepository)
         {
             _categoryReadRepository = categoryReadRepository;
             _productReadRepository = productReadRepository;
@@ -27,6 +28,7 @@ namespace B2B_Project.Persistance.Services
             _userManager = userManager;
             _productWriteRepository = productWriteRepository;
             _imageWriteRepository = imageWriteRepository;
+            _imageReadRepository = imageReadRepository;
         }
 
         public async Task<List<Product>> GetProductsByCategoryAsync(Guid categoryId)
@@ -64,25 +66,34 @@ namespace B2B_Project.Persistance.Services
             return idList;
         }
 
-       
+
         public async Task<List<Product>> GetCompanyProductsByUsername(string userName)
         {
-            var user =  await _userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByNameAsync(userName);
 
             Guid companyID = await _companyReadRepository.Table
                 .Where(x => x.PrimaryAppUserID == user.Id || x.SecondaryAppUserID == user.Id)
-                .Select(x=>x.Id)
+                .Select(x => x.Id)
                 .FirstOrDefaultAsync();
 
             var products = await _productReadRepository.Table
-                .Where(x => x.CompanyId == companyID && x.DeletedDate==null)
-                .OrderBy(x=>x.CreatedDate)
+                .Where(x => x.CompanyId == companyID && x.DeletedDate == null)
+                .OrderBy(x => x.CreatedDate)
                 .ToListAsync();
 
             return products;
         }
         public async Task<bool> CreateProductAsync(CreateProductDto model)
         {
+            var user = await _userManager.FindByNameAsync(model.Username);
+            if (user == null)
+            {
+                return false;
+            }
+            //userın company'sini getir
+            var company = await _companyReadRepository.GetAll()
+            .FirstOrDefaultAsync(x => x.PrimaryAppUserID == user.Id || x.SecondaryAppUserID == user.Id);
+
             Product p = new()
             {
                 Name = model.Name,
@@ -91,7 +102,7 @@ namespace B2B_Project.Persistance.Services
                 Stock = model.Stock,
                 ProductCode = model.ProductCode,
                 CategoryId = model.CategoryId,
-                CompanyId = model.CompanyId
+                CompanyId = company.Id
             };
 
             await _productWriteRepository.AddAsync(p);
@@ -140,5 +151,98 @@ namespace B2B_Project.Persistance.Services
             return false;
         }
 
+        public async Task<bool> DeleteById(Guid productId)
+        {
+            var product = await _productReadRepository.GetByIdAsync(productId.ToString());
+            var res = _productWriteRepository.Remove(product);
+            await _productWriteRepository.SaveAsync();
+            return res;
+        }
+
+        public async Task<bool> UpdateProductAsync(UpdateProductCommandRequest request)
+        {
+            
+            var product = await _productReadRepository.GetByIdAsync(request.ProductId);
+            product.Name = request.Name;
+            product.Description = request.Description;
+            product.Price = request.Price;
+            product.Stock = request.Stock;
+            product.ProductCode = request.ProductCode;
+            product.CategoryId = request.CategoryId;
+            bool responseProduct = _productWriteRepository.Update(product);
+
+            if (request.ProductImages != null && request.ProductImages.Any())
+            {
+                var images = await _imageReadRepository
+                    .GetAll()
+                    .Where(x => x.EntityType == product.GetType().Name && x.EntityId == product.Id.ToString() && x.DeletedDate==null)
+                    .ToListAsync();
+                foreach (var image in images)
+                {
+                    _imageWriteRepository.Remove(image);
+
+                    if (File.Exists(image.ImageUrl))
+                    {
+                        File.Delete(image.ImageUrl);
+                    }
+                }
+
+                var imgRes = await _imageWriteRepository.SaveAsync();
+                if (imgRes > 0)
+                {
+                    bool responseImage = await SaveImages(request.ProductImages, product.Id.ToString(), product.GetType());
+                    
+                    if (responseImage && responseProduct)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+
+        }
+
+        private async Task<bool> SaveImages(List<IFormFile> imageList, string entityID, Type entityType)
+        {
+            if (imageList != null && imageList.Any())
+            {
+                foreach (var item in imageList)
+                {
+                    if (!string.IsNullOrEmpty(item.FileName))
+                    {
+                        string directory = Path.Combine("wwwroot", "images", entityType.Name);
+                        //{DateTime.UtcNow:yyyyMMdd}
+                        string fileName = $"{entityID}_{item.FileName}";
+                        string filePath = Path.Combine(directory, fileName);
+
+                        if (!Directory.Exists(directory))
+                        {
+                            Directory.CreateDirectory(directory);
+                        }
+
+                        using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await item.CopyToAsync(stream);
+                        }
+
+                        Image img = new()
+                        {
+                            ImageName = item.FileName,
+                            ImageUrl = filePath,
+                            EntityType = entityType.Name,
+                            EntityId = entityID
+                        };
+                        await _imageWriteRepository.AddAsync(img);
+                    }
+                }
+                int result = await _imageWriteRepository.SaveAsync();
+                if (result > 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
