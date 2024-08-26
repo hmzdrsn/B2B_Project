@@ -1,6 +1,7 @@
 ﻿using B2B_Project.Application;
 using B2B_Project.Application.DTOs.Product;
 using B2B_Project.Application.Features.Product.Commands.UpdateProduct;
+using B2B_Project.Application.Features.Product.Queries.GetByIdProduct;
 using B2B_Project.Application.Repositories;
 using B2B_Project.Application.Services;
 using B2B_Project.Domain.Entities;
@@ -8,11 +9,15 @@ using B2B_Project.Domain.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
+using System.Xml.Linq;
 
 namespace B2B_Project.Persistance.Services
 {
     public class ProductService : IProductService
     {
+        #region dependencies
+
         private readonly ICategoryReadRepository _categoryReadRepository;
         private readonly IProductReadRepository _productReadRepository;
         private readonly IProductWriteRepository _productWriteRepository;
@@ -30,6 +35,9 @@ namespace B2B_Project.Persistance.Services
             _imageWriteRepository = imageWriteRepository;
             _imageReadRepository = imageReadRepository;
         }
+        #endregion
+
+        #region Queries
 
         public async Task<List<Product>> GetProductsByCategoryAsync(Guid categoryId)
         {
@@ -40,8 +48,27 @@ namespace B2B_Project.Persistance.Services
 
             return products;
         }
-
-
+        public async Task<GetByIdProductQueryResponse> GetProductByIdWithImageAndCategory(GetByIdProductQueryRequest request)
+        {
+            var product = await _productReadRepository.GetAll()
+                .Include(p => p.Category)
+                .Where(x => x.Id.ToString() == request.ProductId && x.DeletedDate == null)
+                .FirstOrDefaultAsync();
+            if (product == null)
+            {
+                return null;
+            }
+            var images = await _imageReadRepository
+                .GetAll()
+                .Where(x => x.EntityId == request.ProductId &&
+                x.EntityType == product.GetType().Name && x.DeletedDate == null)
+                .ToListAsync();
+            return new()
+            {
+                Product = product,
+                Images = images
+            };
+        }
         private async Task<List<Guid>> GetCategoryIds(Guid id)
         {
             var idList = new List<Guid>();
@@ -65,8 +92,6 @@ namespace B2B_Project.Persistance.Services
 
             return idList;
         }
-
-
         public async Task<List<Product>> GetCompanyProductsByUsername(string userName)
         {
             var user = await _userManager.FindByNameAsync(userName);
@@ -83,6 +108,9 @@ namespace B2B_Project.Persistance.Services
 
             return products;
         }
+        #endregion
+
+        #region Commands
         public async Task<bool> CreateProductAsync(CreateProductDto model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
@@ -105,63 +133,23 @@ namespace B2B_Project.Persistance.Services
                 CompanyId = company.Id
             };
 
-            await _productWriteRepository.AddAsync(p);
+            bool responseProduct = await _productWriteRepository.AddAsync(p);
             int res = await _productWriteRepository.SaveAsync();
 
             if (res > 0)
             {
-                if (model.ProductImages != null && model.ProductImages.Any())
+                bool responseImage = await SaveImages(model.ProductImages, p.Id.ToString(), p.GetType());
+                if (responseImage && responseProduct)
                 {
-                    foreach (var item in model.ProductImages)
-                    {
-                        if (!string.IsNullOrEmpty(item.FileName))
-                        {
-                            string directory = Path.Combine("wwwroot", "images", p.GetType().Name);
-                            //{DateTime.UtcNow:yyyyMMdd}
-                            string fileName = $"{p.Id}_{item.FileName}";
-                            string filePath = Path.Combine(directory, fileName);
-
-                            if (!Directory.Exists(directory))
-                            {
-                                Directory.CreateDirectory(directory);
-                            }
-
-                            using (FileStream stream = new FileStream(filePath, FileMode.Create))
-                            {
-                                await item.CopyToAsync(stream);
-                            }
-
-                            Image img = new()
-                            {
-                                ImageName = item.FileName,
-                                ImageUrl = filePath,
-                                EntityType = p.GetType().Name,
-                                EntityId = p.Id.ToString()
-                            };
-                            await _imageWriteRepository.AddAsync(img);
-                        }
-                    }
-
-                    await _imageWriteRepository.SaveAsync();
+                    return true;
                 }
-
                 return true;
             }
-
             return false;
         }
-
-        public async Task<bool> DeleteById(Guid productId)
-        {
-            var product = await _productReadRepository.GetByIdAsync(productId.ToString());
-            var res = _productWriteRepository.Remove(product);
-            await _productWriteRepository.SaveAsync();
-            return res;
-        }
-
         public async Task<bool> UpdateProductAsync(UpdateProductCommandRequest request)
         {
-            
+
             var product = await _productReadRepository.GetByIdAsync(request.ProductId);
             product.Name = request.Name;
             product.Description = request.Description;
@@ -170,39 +158,31 @@ namespace B2B_Project.Persistance.Services
             product.ProductCode = request.ProductCode;
             product.CategoryId = request.CategoryId;
             bool responseProduct = _productWriteRepository.Update(product);
-
-            if (request.ProductImages != null && request.ProductImages.Any())
+            int prodRes = await _productWriteRepository.SaveAsync();
+            if (prodRes > 0)
             {
-                var images = await _imageReadRepository
-                    .GetAll()
-                    .Where(x => x.EntityType == product.GetType().Name && x.EntityId == product.Id.ToString() && x.DeletedDate==null)
-                    .ToListAsync();
-                foreach (var image in images)
-                {
-                    _imageWriteRepository.Remove(image);
-
-                    if (File.Exists(image.ImageUrl))
-                    {
-                        File.Delete(image.ImageUrl);
-                    }
-                }
-
-                var imgRes = await _imageWriteRepository.SaveAsync();
-                if (imgRes > 0)
+                if (request.ProductImages != null && request.ProductImages.Any())
                 {
                     bool responseImage = await SaveImages(request.ProductImages, product.Id.ToString(), product.GetType());
-                    
+
                     if (responseImage && responseProduct)
                     {
                         return true;
                     }
                 }
+                return true;
             }
 
             return false;
 
         }
-
+        public async Task<bool> DeleteById(Guid productId)
+        {
+            var product = await _productReadRepository.GetByIdAsync(productId.ToString());
+            var res = _productWriteRepository.Remove(product);
+            await _productWriteRepository.SaveAsync();
+            return res;
+        }
         private async Task<bool> SaveImages(List<IFormFile> imageList, string entityID, Type entityType)
         {
             if (imageList != null && imageList.Any())
@@ -244,5 +224,82 @@ namespace B2B_Project.Persistance.Services
             }
             return false;
         }
+        #endregion
     }
 }
+
+
+/*
+ 
+ public async Task<bool> CreateProductAsync(CreateProductDto model)
+        {
+            var user = await _userManager.FindByNameAsync(model.Username);
+            if (user == null)
+            {
+                return false;
+            }
+            //userın company'sini getir
+            var company = await _companyReadRepository.GetAll()
+            .FirstOrDefaultAsync(x => x.PrimaryAppUserID == user.Id || x.SecondaryAppUserID == user.Id);
+
+            Product p = new()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                Price = model.Price,
+                Stock = model.Stock,
+                ProductCode = model.ProductCode,
+                CategoryId = model.CategoryId,
+                CompanyId = company.Id
+            };
+
+            await _productWriteRepository.AddAsync(p);
+            int res = await _productWriteRepository.SaveAsync();
+
+            if (res > 0)
+            {
+                if (model.ProductImages != null && model.ProductImages.Any())
+                {
+                    foreach (var item in model.ProductImages)
+                    {
+                        if (!string.IsNullOrEmpty(item.FileName))
+                        {
+                            long date = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+                            string directory = Path.Combine("wwwroot", "images", p.GetType().Name);
+                            //{DateTime.UtcNow:yyyyMMdd}
+                            string fileName = $"{p.Id}_{date}_{item.FileName}";
+
+                            string filePath = Path.Combine(directory, fileName);
+
+                            if (!Directory.Exists(directory))
+                            {
+                                Directory.CreateDirectory(directory);
+                            }
+
+                            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await item.CopyToAsync(stream);
+                            }
+
+                            Image img = new()
+                            {
+                                ImageName = item.FileName,
+                                ImageUrl = filePath,
+                                EntityType = p.GetType().Name,
+                                EntityId = p.Id.ToString()
+                            };
+                            await _imageWriteRepository.AddAsync(img);
+                        }
+                    }
+
+                    await _imageWriteRepository.SaveAsync();
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+ 
+ */

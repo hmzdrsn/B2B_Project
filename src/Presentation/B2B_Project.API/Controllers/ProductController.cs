@@ -2,6 +2,7 @@
 using B2B_Project.Application.Features.Product.Commands.RemoveProduct;
 using B2B_Project.Application.Features.Product.Commands.UpdateProduct;
 using B2B_Project.Application.Features.Product.Queries.GetAllProduct;
+using B2B_Project.Application.Features.Product.Queries.GetByIdProduct;
 using B2B_Project.Application.Features.Product.Queries.GetCompanyProductsByUsername;
 using B2B_Project.Application.Features.Product.Queries.GetProductsByCategory;
 using B2B_Project.Application.Features.Product.Queries.GetProductsByCompany;
@@ -32,6 +33,12 @@ namespace B2B_Project.API.Controllers
             return Ok(res);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetById([FromQuery] GetByIdProductQueryRequest req)
+        {
+            var res = await _mediator.Send(req);
+            return Ok(res);
+        }
 
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
@@ -65,8 +72,9 @@ namespace B2B_Project.API.Controllers
             var res = await _mediator.Send(req);
             return Ok(res);
         }
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost]
-        public async Task<IActionResult> UpdateProduct(UpdateProductCommandRequest req)
+        public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductCommandRequest req)
         {
             var res = await _mediator.Send(req);
             return Ok(res);
