@@ -1,4 +1,7 @@
-﻿using B2B_Project.Application.DTOs.Order;
+﻿using B2B_Project.Application;
+using B2B_Project.Application.DTOs.Order;
+using B2B_Project.Application.Features.Order.Commands.UpdateOrderStatus;
+using B2B_Project.Application.Features.Order.Queries.GetOrderWithDetailsById;
 using B2B_Project.Application.Repositories;
 using B2B_Project.Application.Services;
 using B2B_Project.Domain.Entities;
@@ -15,9 +18,10 @@ namespace B2B_Project.Persistance.Services
         private readonly IBasketReadRepository _basketReadRepository;
         private readonly ICompanyReadRepository _companyReadRepository;
         private readonly IOrderStatusReadRepository _orderStatusReadRepository;
+        private readonly IImageReadRepository _imageReadRepository;
         private readonly UserManager<AppUser> _userManager;
 
-        public OrderService(IOrderWriteRepository orderWriteRepository, UserManager<AppUser> userManager, IBasketReadRepository basketReadRepository, IOrderReadRepository orderReadRepository, ICompanyReadRepository companyReadRepository, IOrderStatusReadRepository orderStatusReadRepository)
+        public OrderService(IOrderWriteRepository orderWriteRepository, UserManager<AppUser> userManager, IBasketReadRepository basketReadRepository, IOrderReadRepository orderReadRepository, ICompanyReadRepository companyReadRepository, IOrderStatusReadRepository orderStatusReadRepository, IImageReadRepository imageReadRepository)
         {
             _orderWriteRepository = orderWriteRepository;
             _userManager = userManager;
@@ -25,6 +29,7 @@ namespace B2B_Project.Persistance.Services
             _orderReadRepository = orderReadRepository;
             _companyReadRepository = companyReadRepository;
             _orderStatusReadRepository = orderStatusReadRepository;
+            _imageReadRepository = imageReadRepository;
         }
 
         public async Task<string> CreateOrderCode()
@@ -112,6 +117,7 @@ namespace B2B_Project.Persistance.Services
                                 .Where(x => x.OrderDetails.Any(x => x.Product.CompanyId == company.Id))
                                 .Select(x => new GetOrdersByCompany()
                                 {
+                                    OrderId = x.Id.ToString(),
                                     Name = x.AppUser.Name,
                                     TotalPrice = x.TotalPrice,
                                     OrderDate = DateOnly.FromDateTime(x.OrderDate),
@@ -122,6 +128,58 @@ namespace B2B_Project.Persistance.Services
 
             }
             return null;
+        }
+
+        public async Task<GetOrderWithDetailsByIdQueryResponse> GetOrderWithDetailsById(GetOrderWithDetailsByIdQueryRequest request)
+        {
+            var order =await _orderReadRepository.GetAll()
+                .Where(x=>x.Id.ToString()==request.OrderId)
+                .Include(x => x.OrderStatus)
+                .Include(x => x.OrderDetails)
+                .ThenInclude(p => p.Product)
+                .FirstOrDefaultAsync();
+            if (order != null)
+            {
+                List<OrderDetailResponse> orderDetails = new();
+                GetOrderWithDetailsByIdQueryResponse response = new();
+                response.Address = order.Address;
+                response.TotalPrice = order.TotalPrice;
+                response.OrderCode = order.OrderCode;
+                response.OrderDate = order.OrderDate;
+                response.OrderStatus = order.OrderStatus.Status;
+
+                foreach (var item in order.OrderDetails)
+                {
+                    orderDetails.Add(new OrderDetailResponse
+                    {
+                        ProductId = item.ProductId.ToString(),
+                        ProductName = item.Product.Name,
+                        Quantity = item.Quantity,
+                        UnitPrice = item.UnitPrice,
+                        ProductImageUrl = await _imageReadRepository.GetAll()
+                         .Where(x => x.EntityId == item.ProductId.ToString())
+                         .Select(x => x.ImageUrl)
+                         .FirstOrDefaultAsync()
+                    });
+                }
+                response.OrderDetails = orderDetails;
+
+                return response;
+            }
+            return null;
+        }
+
+        public async Task<bool> UpdateOrderStatusAsync(UpdateOrderStatusCommandRequest request)
+        {
+            var order = await _orderReadRepository.GetAll().FirstOrDefaultAsync(x => x.Id.ToString() == request.OrderId);
+            if (order == null)
+            {
+                return false;
+            }
+            order.OrderStatusId = Guid.Parse(request.OrderStatusId);
+            var res = _orderWriteRepository.Update(order);
+            await _orderWriteRepository.SaveAsync();
+            return res;
         }
     }
 }

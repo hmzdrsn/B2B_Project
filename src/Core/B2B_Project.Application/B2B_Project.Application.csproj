@@ -21,6 +21,7 @@
     <Folder Include="Features\Category\Commands\" />
     <Folder Include="Features\Company\Queries\" />
     <Folder Include="Features\Image\Queries\" />
+    <Folder Include="Features\OrderStatus\Commands\" />
   </ItemGroup>
 
 </Project>

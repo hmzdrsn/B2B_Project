@@ -2,6 +2,7 @@
 {
     public class GetOrdersByCompany
     {
+        public string OrderId { get; set; }
         public string Name { get; set; }
         public decimal TotalPrice { get; set; }
         public DateOnly OrderDate{ get; set; }

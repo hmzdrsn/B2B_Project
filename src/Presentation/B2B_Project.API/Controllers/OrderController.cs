@@ -1,5 +1,7 @@
 ﻿using B2B_Project.Application.Features.Order.Commands.CreateOrder;
+using B2B_Project.Application.Features.Order.Commands.UpdateOrderStatus;
 using B2B_Project.Application.Features.Order.Queries.GetOrdersByCompany;
+using B2B_Project.Application.Features.Order.Queries.GetOrderWithDetailsById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,9 +31,23 @@ namespace B2B_Project.API.Controllers
             return Ok(res);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetOrderById([FromQuery] GetOrderWithDetailsByIdQueryRequest request)
+        {
+            var res = await _mediator.Send(request);
+            return Ok(res);
+        }
+
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost]
         public async Task<IActionResult> CreateOrder(CreateOrderCommandRequest request)
+        {
+            var res = await _mediator.Send(request);
+            return Ok(res);
+        }
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrderStatus(UpdateOrderStatusCommandRequest request)
         {
             var res = await _mediator.Send(request);
             return Ok(res);
