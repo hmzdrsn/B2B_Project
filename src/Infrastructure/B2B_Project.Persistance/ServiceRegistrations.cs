@@ -53,6 +53,7 @@ namespace B2B_Project.Persistance
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<IRoleService, RoleService>();
         }
     }
 }

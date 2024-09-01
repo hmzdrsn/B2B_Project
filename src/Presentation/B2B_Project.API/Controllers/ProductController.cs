@@ -4,6 +4,7 @@ using B2B_Project.Application.Features.Product.Commands.UpdateProduct;
 using B2B_Project.Application.Features.Product.Queries.GetAllProduct;
 using B2B_Project.Application.Features.Product.Queries.GetByIdProduct;
 using B2B_Project.Application.Features.Product.Queries.GetCompanyProductsByUsername;
+using B2B_Project.Application.Features.Product.Queries.GetDefaultProductsByFilter;
 using B2B_Project.Application.Features.Product.Queries.GetProductsByCategory;
 using B2B_Project.Application.Features.Product.Queries.GetProductsByCompany;
 using MediatR;
@@ -25,6 +26,8 @@ namespace B2B_Project.API.Controllers
             _mediator = mediator;
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(Roles ="Admin")]
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -40,7 +43,7 @@ namespace B2B_Project.API.Controllers
             return Ok(res);
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(AuthenticationSchemes = "Bearer",Roles ="Company")]
         [HttpGet]
         public async Task<IActionResult> GetCompanyProducts()
         {
@@ -50,11 +53,18 @@ namespace B2B_Project.API.Controllers
             var data = await _mediator.Send(req);
             return Ok(data);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProductsByDefaultFilter([FromQuery] GetProductsByDefaultFilterQueryRequest req)
+        {
+            var data = await _mediator.Send(req);
+            return Ok(data);
+        }
+
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductCommandRequest req)
         {
-
             req.Username = User.FindFirstValue(ClaimTypes.Name);
             var res = _mediator.Send(req);
             return Ok(res.Result);

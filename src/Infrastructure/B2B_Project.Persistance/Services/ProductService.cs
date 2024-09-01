@@ -2,6 +2,7 @@
 using B2B_Project.Application.DTOs.Product;
 using B2B_Project.Application.Features.Product.Commands.UpdateProduct;
 using B2B_Project.Application.Features.Product.Queries.GetByIdProduct;
+using B2B_Project.Application.Features.Product.Queries.GetDefaultProductsByFilter;
 using B2B_Project.Application.Repositories;
 using B2B_Project.Application.Services;
 using B2B_Project.Domain.Entities;
@@ -9,8 +10,6 @@ using B2B_Project.Domain.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Win32;
-using System.Xml.Linq;
 
 namespace B2B_Project.Persistance.Services
 {
@@ -223,6 +222,40 @@ namespace B2B_Project.Persistance.Services
                 }
             }
             return false;
+        }
+
+        public async Task<List<GetProductsByDefaultFilterQueryResponse>> GetProductsByDefaultFilter(GetProductsByDefaultFilterQueryRequest request)
+        {
+            if (request.CurrentPage < 1 || request.PageSize<1)
+            {
+                return null;
+            }
+            var product = await _productReadRepository.GetAll()
+                .OrderByDescending(x => x.CreatedDate)
+                .Skip((request.CurrentPage-1)*request.PageSize)
+                .Take(request.PageSize)
+                .Select(x=>new GetProductsByDefaultFilterQueryResponse()
+                {
+                    ProductId=x.Id.ToString(),
+                    ProductName=x.Name,
+                    ProductPrice =x.Price,
+                    ProductDescription = x.Description ?? ""
+                })
+                .ToListAsync();
+            if(product == null)
+            {
+                return null;
+            }
+
+            foreach (var item in product)
+            {
+                var image = await _imageReadRepository.Table.FirstOrDefaultAsync(x => x.EntityId==item.ProductId);
+                if (image != null)
+                {
+                    item.ProductUrl = image.ImageUrl ?? "";
+                }
+            }
+            return product;
         }
         #endregion
     }

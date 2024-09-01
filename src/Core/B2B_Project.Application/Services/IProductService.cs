@@ -1,6 +1,7 @@
 ﻿using B2B_Project.Application.DTOs.Product;
 using B2B_Project.Application.Features.Product.Commands.UpdateProduct;
 using B2B_Project.Application.Features.Product.Queries.GetByIdProduct;
+using B2B_Project.Application.Features.Product.Queries.GetDefaultProductsByFilter;
 using B2B_Project.Domain.Entities;
 
 namespace B2B_Project.Application.Services
@@ -13,5 +14,7 @@ namespace B2B_Project.Application.Services
         Task<bool> UpdateProductAsync(UpdateProductCommandRequest request);
         Task<bool> DeleteById(Guid productId);
         Task<GetByIdProductQueryResponse> GetProductByIdWithImageAndCategory(GetByIdProductQueryRequest request);
+
+        Task<List<GetProductsByDefaultFilterQueryResponse>> GetProductsByDefaultFilter(GetProductsByDefaultFilterQueryRequest request);
     }
 }

@@ -4,6 +4,7 @@ using B2B_Project.Infrastructure;
 using B2B_Project.Persistance;
 using B2B_Project.Persistance.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
@@ -22,15 +23,10 @@ builder.Services.AddIdentity<AppUser, AppRole>(opt =>
     opt.Password.RequireDigit = false;
     opt.Password.RequiredLength = 1;
     opt.Password.RequireNonAlphanumeric = false;
-    opt.Password.RequireUppercase= false;
-    opt.Password.RequireLowercase= false;
-
-
+    opt.Password.RequireUppercase = false;
+    opt.Password.RequireLowercase = false;
 })
     .AddEntityFrameworkStores<B2B_ProjectDbContext>();
-    
-
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -54,9 +50,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         o.TokenValidationParameters = new TokenValidationParameters()
         {
-            ValidateAudience = true, 
+            ValidateAudience = true,
             ValidateIssuer = true,
-            ValidateLifetime = true, 
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
 
             ValidAudience = builder.Configuration["Token:Audience"],
@@ -111,6 +107,7 @@ app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

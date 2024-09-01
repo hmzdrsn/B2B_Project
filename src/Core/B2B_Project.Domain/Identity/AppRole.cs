@@ -9,5 +9,9 @@ namespace B2B_Project.Domain.Identity
 {
     public class AppRole : IdentityRole<string>
     {
+        public AppRole()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
     }
 }

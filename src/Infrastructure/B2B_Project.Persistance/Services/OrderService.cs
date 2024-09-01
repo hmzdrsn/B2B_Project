@@ -19,9 +19,11 @@ namespace B2B_Project.Persistance.Services
         private readonly ICompanyReadRepository _companyReadRepository;
         private readonly IOrderStatusReadRepository _orderStatusReadRepository;
         private readonly IImageReadRepository _imageReadRepository;
+        private readonly IProductReadRepository _productReadRepository;
+        private readonly IProductWriteRepository _productWriteRepository;
         private readonly UserManager<AppUser> _userManager;
 
-        public OrderService(IOrderWriteRepository orderWriteRepository, UserManager<AppUser> userManager, IBasketReadRepository basketReadRepository, IOrderReadRepository orderReadRepository, ICompanyReadRepository companyReadRepository, IOrderStatusReadRepository orderStatusReadRepository, IImageReadRepository imageReadRepository)
+        public OrderService(IOrderWriteRepository orderWriteRepository, UserManager<AppUser> userManager, IBasketReadRepository basketReadRepository, IOrderReadRepository orderReadRepository, ICompanyReadRepository companyReadRepository, IOrderStatusReadRepository orderStatusReadRepository, IImageReadRepository imageReadRepository, IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository)
         {
             _orderWriteRepository = orderWriteRepository;
             _userManager = userManager;
@@ -30,6 +32,8 @@ namespace B2B_Project.Persistance.Services
             _companyReadRepository = companyReadRepository;
             _orderStatusReadRepository = orderStatusReadRepository;
             _imageReadRepository = imageReadRepository;
+            _productReadRepository = productReadRepository;
+            _productWriteRepository = productWriteRepository;
         }
 
         public async Task<string> CreateOrderCode()
@@ -56,6 +60,9 @@ namespace B2B_Project.Persistance.Services
             {
                 return false;
             }
+
+            
+
             //basketteki ürünleri al totalprice hesapla
             decimal TotalPrice = basket.BasketItems.Sum(x => x.Product.Price * x.Quantity) ?? 0;
             if (TotalPrice == 0)
@@ -89,10 +96,21 @@ namespace B2B_Project.Persistance.Services
             }
             order.OrderDetails = orderDetailList;
 
+
+            //Ürünün Stok Miktarını Düşür.
+            foreach (var item in basket.BasketItems)
+            {
+                var product = await _productReadRepository.GetAll()
+                    .FirstOrDefaultAsync(x => x.Id == item.ProductId);
+                product.Stock -= item.Quantity;
+                _productWriteRepository.Update(product);
+            }
+
+
             //kayıt
             await _orderWriteRepository.AddAsync(order);
             await _orderWriteRepository.SaveAsync();
-
+            await _productWriteRepository.SaveAsync();
 
             //sepet temizleme eklenebilir burada
             return true;

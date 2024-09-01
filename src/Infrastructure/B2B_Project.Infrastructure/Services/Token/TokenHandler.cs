@@ -1,5 +1,6 @@
 ﻿using B2B_Project.Application.Services.Token;
 using B2B_Project.Domain.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,15 +12,29 @@ namespace B2B_Project.Infrastructure.Services.Token
     public class TokenHandler : ITokenHandler
     {
         private IConfiguration _configuration;
-
-        public TokenHandler(IConfiguration configuration)
+        private RoleManager<AppRole> _roleManager;
+        private UserManager<AppUser> _userManager;
+        public TokenHandler(IConfiguration configuration, RoleManager<AppRole> roleManager, UserManager<AppUser> userManager)
         {
             _configuration = configuration;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public Application.DTOs.Token CreateAccesToken(int second, AppUser user)
         {
-            Application.DTOs.Token token  = new ();
+            List<Claim> claimList = new List<Claim>();
+            var roleList = _userManager.GetRolesAsync(user).Result.ToList();
+            claimList.Add(new(ClaimTypes.Name, user.UserName));
+            if (roleList.Any())
+            {
+                foreach (var role in roleList)
+                {
+                    claimList.Add(new(ClaimTypes.Role, role));
+                }
+            }
+
+            Application.DTOs.Token token = new();
             SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(_configuration["Token:SecurityKey"]));
             SigningCredentials signingCredentials = new(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -31,7 +46,7 @@ namespace B2B_Project.Infrastructure.Services.Token
                 expires: token.Expiration,
                 notBefore: DateTime.UtcNow,
                 signingCredentials: signingCredentials,
-                claims: new List<Claim> { new(ClaimTypes.Name, user.UserName) }
+                claims: claimList
                 );
             JwtSecurityTokenHandler tokenHandler = new();
 
