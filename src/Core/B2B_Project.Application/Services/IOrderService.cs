@@ -1,6 +1,7 @@
 ﻿using B2B_Project.Application.DTOs.Order;
 using B2B_Project.Application.Features.Order.Commands.UpdateOrderStatus;
 using B2B_Project.Application.Features.Order.Queries.GetOrderWithDetailsById;
+using B2B_Project.Application.Features.Order.Queries.GetUserOrders;
 
 namespace B2B_Project.Application.Services
 {
@@ -11,5 +12,6 @@ namespace B2B_Project.Application.Services
         Task<GetOrderWithDetailsByIdQueryResponse> GetOrderWithDetailsById(GetOrderWithDetailsByIdQueryRequest request);
 
         Task<bool> UpdateOrderStatusAsync(UpdateOrderStatusCommandRequest request);
+        Task<List<GetUserOrdersQueryResponse>> GetUserOrders(GetUserOrdersQueryRequest request);
     }
 }

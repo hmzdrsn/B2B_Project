@@ -13,6 +13,7 @@ namespace B2B_Project.Persistance
         public static void AddPersistanceServices(this IServiceCollection services)
         {
             services.AddDbContext<B2B_ProjectDbContext>();
+            services.AddSignalR();
 
             services.AddScoped<IOrderReadRepository, OrderReadRepository>();
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
@@ -47,13 +48,22 @@ namespace B2B_Project.Persistance
             services.AddScoped<ICompanyReadRepository, CompanyReadRepository>();
             services.AddScoped<ICompanyWriteRepository, CompanyWriteRepository>();
 
+            services.AddScoped<IAddressReadRepository, AddressReadRepository>();
+            services.AddScoped<IAddressWriteRepository, AddressWriteRepository>();
+
+            services.AddScoped<IMessageReadRepository, MessageReadRepository>();
+            services.AddScoped<IMessageWriteRepository, MessageWriteRepository>();
+
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IUserService,UserService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IAddressService, AddressService>();
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IChatHubService, ChatHubService>();
         }
     }
 }

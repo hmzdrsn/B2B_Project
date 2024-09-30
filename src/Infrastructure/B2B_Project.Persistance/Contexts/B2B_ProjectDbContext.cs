@@ -3,11 +3,6 @@ using B2B_Project.Domain.Entities;
 using B2B_Project.Domain.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace B2B_Project.Persistance.Context
 {
@@ -27,6 +22,23 @@ namespace B2B_Project.Persistance.Context
             //    .HasOne(x => x.Order)
             //    .WithMany()
             //    .HasForeignKey(x => x.OrderId);
+
+            builder.Entity<Order>()
+            .HasOne(o => o.Address)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Order>()
+                .HasOne(o => o.AppUser)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Message>()
+                .HasOne(x => x.Sender)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Message>()
+                .HasOne(x => x.Receiver)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);
         }
@@ -73,5 +85,7 @@ namespace B2B_Project.Persistance.Context
         public DbSet<Company> Companies { get; set; }
         public DbSet<OrderStatus> OrderStatus { get; set; }
         public DbSet<Image> Images { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Message> Messages { get; set; }
     }
 }

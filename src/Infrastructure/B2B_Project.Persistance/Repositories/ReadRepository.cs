@@ -2,11 +2,6 @@
 using B2B_Project.Domain.Common;
 using B2B_Project.Persistance.Context;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace B2B_Project.Persistance.Repositories
 {
@@ -29,7 +24,7 @@ namespace B2B_Project.Persistance.Repositories
         public async Task<T> GetByIdAsync(string id)
         {
             var query = Table.AsQueryable();
-            return await query.FirstOrDefaultAsync(x => x.Id == Guid.Parse(id));
+            return await query.FirstOrDefaultAsync(x => x.Id.ToString() == id);
         }
     }
 }

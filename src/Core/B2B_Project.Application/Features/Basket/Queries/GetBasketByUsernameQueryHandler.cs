@@ -10,19 +10,19 @@ namespace B2B_Project.Application.Features.Basket.Queries
 
         public GetBasketByUsernameQueryHandler(IBasketService basketService)
         {
-            
+
             _basketService = basketService;
         }
 
         public async Task<HandlerResponse<GetBasketByUsernameQueryResponse>> Handle(GetBasketByUsernameQueryRequest request, CancellationToken cancellationToken)
         {
-            var basket = await _basketService.GetBasketByUsername(request.Username);
+            var basket = await _basketService.GetBasketByUsername(request);
 
-            if(basket == null)
+            if (basket == null)
             {
                 return new()
                 {
-                    Message="null amk"
+                    Message = "null amk"
                 };
             }
 

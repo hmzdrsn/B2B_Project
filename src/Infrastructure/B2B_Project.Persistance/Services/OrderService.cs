@@ -2,6 +2,7 @@
 using B2B_Project.Application.DTOs.Order;
 using B2B_Project.Application.Features.Order.Commands.UpdateOrderStatus;
 using B2B_Project.Application.Features.Order.Queries.GetOrderWithDetailsById;
+using B2B_Project.Application.Features.Order.Queries.GetUserOrders;
 using B2B_Project.Application.Repositories;
 using B2B_Project.Application.Services;
 using B2B_Project.Domain.Entities;
@@ -21,9 +22,11 @@ namespace B2B_Project.Persistance.Services
         private readonly IImageReadRepository _imageReadRepository;
         private readonly IProductReadRepository _productReadRepository;
         private readonly IProductWriteRepository _productWriteRepository;
+        private readonly IAddressReadRepository _addressReadRepository;
+
         private readonly UserManager<AppUser> _userManager;
 
-        public OrderService(IOrderWriteRepository orderWriteRepository, UserManager<AppUser> userManager, IBasketReadRepository basketReadRepository, IOrderReadRepository orderReadRepository, ICompanyReadRepository companyReadRepository, IOrderStatusReadRepository orderStatusReadRepository, IImageReadRepository imageReadRepository, IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository)
+        public OrderService(IOrderWriteRepository orderWriteRepository, UserManager<AppUser> userManager, IBasketReadRepository basketReadRepository, IOrderReadRepository orderReadRepository, ICompanyReadRepository companyReadRepository, IOrderStatusReadRepository orderStatusReadRepository, IImageReadRepository imageReadRepository, IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository, IAddressReadRepository addressReadRepository)
         {
             _orderWriteRepository = orderWriteRepository;
             _userManager = userManager;
@@ -34,11 +37,12 @@ namespace B2B_Project.Persistance.Services
             _imageReadRepository = imageReadRepository;
             _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
+            _addressReadRepository = addressReadRepository;
         }
 
         public async Task<string> CreateOrderCode()
         {
-            int orderCount =await _orderReadRepository.Table.CountAsync() + 1;
+            int orderCount = await _orderReadRepository.Table.CountAsync() + 1;
 
             return orderCount.ToString("D10");
         }
@@ -61,7 +65,7 @@ namespace B2B_Project.Persistance.Services
                 return false;
             }
 
-            
+
 
             //basketteki ürünleri al totalprice hesapla
             decimal TotalPrice = basket.BasketItems.Sum(x => x.Product.Price * x.Quantity) ?? 0;
@@ -70,16 +74,21 @@ namespace B2B_Project.Persistance.Services
                 return false;
             }
 
+            var address = await _addressReadRepository.Table.FirstOrDefaultAsync(x => x.AppUserId == user.Id && x.IsActive == true);
+            if (address == null)
+            {
+                return false;
+            }
             var OrderStatus = await _orderStatusReadRepository.GetByIdAsync(model.OrderStatusId);
 
             //order olustur, order detail olusurken icerisindeki quantity ve UnitPrice degerlerini set et.
             Order order = new Order();
             order.AppUserId = user.Id;
-            order.Address = model.Address;
+            order.Address = address;
             order.TotalPrice = TotalPrice;
             order.OrderDate = DateTime.Now;
             order.OrderStatus = OrderStatus;
-            order.OrderCode =await CreateOrderCode();
+            order.OrderCode = await CreateOrderCode();
             //order detail list olusturuldu
             List<OrderDetail> orderDetailList = new();
             foreach (var basketItem in basket.BasketItems)
@@ -150,17 +159,18 @@ namespace B2B_Project.Persistance.Services
 
         public async Task<GetOrderWithDetailsByIdQueryResponse> GetOrderWithDetailsById(GetOrderWithDetailsByIdQueryRequest request)
         {
-            var order =await _orderReadRepository.GetAll()
-                .Where(x=>x.Id.ToString()==request.OrderId)
+            var order = await _orderReadRepository.GetAll()
+                .Where(x => x.Id.ToString() == request.OrderId)
                 .Include(x => x.OrderStatus)
                 .Include(x => x.OrderDetails)
                 .ThenInclude(p => p.Product)
+                .Include(x => x.Address)
                 .FirstOrDefaultAsync();
             if (order != null)
             {
                 List<OrderDetailResponse> orderDetails = new();
                 GetOrderWithDetailsByIdQueryResponse response = new();
-                response.Address = order.Address;
+                response.Address = order.Address.City;
                 response.TotalPrice = order.TotalPrice;
                 response.OrderCode = order.OrderCode;
                 response.OrderDate = order.OrderDate;
@@ -198,6 +208,32 @@ namespace B2B_Project.Persistance.Services
             var res = _orderWriteRepository.Update(order);
             await _orderWriteRepository.SaveAsync();
             return res;
+        }
+
+        public async Task<List<GetUserOrdersQueryResponse>> GetUserOrders(GetUserOrdersQueryRequest request)
+        {
+            var user = await _userManager.FindByNameAsync(request.Username);
+            if (user == null)
+            {
+                return null;
+            }
+            var orders = await _orderReadRepository.Table
+                .Include(x => x.OrderStatus)
+                .Where(x => x.AppUserId == user.Id)
+                .Select(x => new GetUserOrdersQueryResponse()
+                {
+                    AppUserId = x.AppUserId,
+                    OrderCode = x.OrderCode,
+                    OrderDate = x.OrderDate,
+                    OrderStatus = x.OrderStatus.Status,
+                    TotalPrice = x.TotalPrice
+                })
+                .ToListAsync();
+            if (!orders.Any())
+            {
+                return null;
+            }
+            return orders;
         }
     }
 }

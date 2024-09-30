@@ -226,30 +226,31 @@ namespace B2B_Project.Persistance.Services
 
         public async Task<List<GetProductsByDefaultFilterQueryResponse>> GetProductsByDefaultFilter(GetProductsByDefaultFilterQueryRequest request)
         {
-            if (request.CurrentPage < 1 || request.PageSize<1)
+            if (request.CurrentPage < 1 || request.PageSize < 1)
             {
                 return null;
             }
             var product = await _productReadRepository.GetAll()
+                .Where(x => x.DeletedDate == null)
                 .OrderByDescending(x => x.CreatedDate)
-                .Skip((request.CurrentPage-1)*request.PageSize)
+                .Skip((request.CurrentPage - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .Select(x=>new GetProductsByDefaultFilterQueryResponse()
+                .Select(x => new GetProductsByDefaultFilterQueryResponse()
                 {
-                    ProductId=x.Id.ToString(),
-                    ProductName=x.Name,
-                    ProductPrice =x.Price,
+                    ProductId = x.Id.ToString(),
+                    ProductName = x.Name,
+                    ProductPrice = x.Price,
                     ProductDescription = x.Description ?? ""
                 })
                 .ToListAsync();
-            if(product == null)
+            if (product == null)
             {
                 return null;
             }
 
             foreach (var item in product)
             {
-                var image = await _imageReadRepository.Table.FirstOrDefaultAsync(x => x.EntityId==item.ProductId);
+                var image = await _imageReadRepository.Table.FirstOrDefaultAsync(x => x.EntityId == item.ProductId);
                 if (image != null)
                 {
                     item.ProductUrl = image.ImageUrl ?? "";

@@ -2,9 +2,9 @@
 using B2B_Project.Application.DTOs.Basket;
 using MediatR;
 
-namespace B2B_Project.Application.Features.Basket.Commands
+namespace B2B_Project.Application.Features.Basket.Commands.AddProductToBasket
 {
-    public class AddProductToBasketCommandRequest: IRequest<HandlerResponse< AddProductToBasketCommandResponse>>
+    public class AddProductToBasketCommandRequest : IRequest<HandlerResponse<AddProductToBasketCommandResponse>>
     {
         public string Username { get; set; }
         public Guid ProductId { get; set; }

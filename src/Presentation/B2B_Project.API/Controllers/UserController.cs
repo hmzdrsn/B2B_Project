@@ -1,8 +1,11 @@
 ﻿using B2B_Project.Application.Features.User.Commands.CreateUser;
 using B2B_Project.Application.Features.User.Commands.LoginUser;
 using B2B_Project.Application.Features.User.Queries;
+using B2B_Project.Application.Features.User.Queries.GetUserShortProperties;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace B2B_Project.API.Controllers
 {
@@ -20,8 +23,17 @@ namespace B2B_Project.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            GetAllUserQueryRequest getAllUserQueryRequest = new GetAllUserQueryRequest();
-            var response =await _mediator.Send(getAllUserQueryRequest);
+            GetAllUserQueryRequest req = new GetAllUserQueryRequest();
+            var response = await _mediator.Send(req);
+            return Ok(response);
+        }
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet]
+        public async Task<IActionResult> GetUserShortProperties()
+        {
+            GetUserShortPropertiesQueryRequest req = new();
+            req.Username = User.FindFirstValue(ClaimTypes.Name);
+            var response = await _mediator.Send(req);
             return Ok(response);
         }
 

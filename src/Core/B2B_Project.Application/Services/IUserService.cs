@@ -1,10 +1,5 @@
 ﻿using B2B_Project.Application.DTOs.User;
-using B2B_Project.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using B2B_Project.Application.Features.User.Queries.GetUserShortProperties;
 
 namespace B2B_Project.Application.Services
 {
@@ -12,5 +7,6 @@ namespace B2B_Project.Application.Services
     {
         Task<bool> CreateUserAsync(CreateUser model);
         Task<List<GetAllUser>> GetAllUserAsync();
+        Task<List<GetUserShortPropertiesQueryResponse>> GetUserShortProperties(GetUserShortPropertiesQueryRequest request);
     }
 }

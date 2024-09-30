@@ -2,7 +2,6 @@
 {
     public class CreateOrder
     {
-        public string? Address { get; set; }
         public string? Username { get; set; }
         public string? OrderStatusId { get; set; }
     }

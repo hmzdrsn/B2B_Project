@@ -15,7 +15,7 @@ namespace B2B_Project.Application.Features.Order.Commands.CreateOrder
 
         public async Task<HandlerResponse<CreateOrderCommandResponse>> Handle(CreateOrderCommandRequest request, CancellationToken cancellationToken)
         {
-            if (await _orderService.CreateOrderAsync(new() { Username = request.Username, Address = request.Address ,OrderStatusId = request.OrderStatusId}))
+            if (await _orderService.CreateOrderAsync(new() { Username = request.Username, OrderStatusId = request.OrderStatusId }))
             {
                 return new()
                 {

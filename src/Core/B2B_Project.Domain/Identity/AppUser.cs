@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using B2B_Project.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace B2B_Project.Domain.Identity
 {
@@ -11,5 +12,7 @@ namespace B2B_Project.Domain.Identity
         public override string Id { get => base.Id; set => base.Id = value; }
         public string Name { get; set; }
         public string Surname { get; set; }
+        public bool IsOnline { get; set; } = false;
+        ICollection<Address>? Addresses { get; set; }
     }
 }

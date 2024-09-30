@@ -7,6 +7,7 @@ using B2B_Project.Application.Features.Product.Queries.GetCompanyProductsByUsern
 using B2B_Project.Application.Features.Product.Queries.GetDefaultProductsByFilter;
 using B2B_Project.Application.Features.Product.Queries.GetProductsByCategory;
 using B2B_Project.Application.Features.Product.Queries.GetProductsByCompany;
+using B2B_Project.Application.Features.Product.Queries.GetProductsCount;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,12 +27,19 @@ namespace B2B_Project.API.Controllers
             _mediator = mediator;
         }
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [Authorize(Roles ="Admin")]
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             GetAllProductQueryRequest request = new GetAllProductQueryRequest();
+            var res = await _mediator.Send(request);
+            return Ok(res);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProductsCount()
+        {
+            GetProductsCountQueryRequest request = new();
             var res = await _mediator.Send(request);
             return Ok(res);
         }
@@ -43,7 +51,7 @@ namespace B2B_Project.API.Controllers
             return Ok(res);
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer",Roles ="Company")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Company")]
         [HttpGet]
         public async Task<IActionResult> GetCompanyProducts()
         {

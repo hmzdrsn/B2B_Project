@@ -7,7 +7,8 @@ namespace B2B_Project.Domain.Entities
     {
         public string AppUserId { get; set; }
         public AppUser AppUser { get; set; }
-        public string Address { get; set; }
+        public Guid AddressId { get; set; } = default!;
+        public Address Address { get; set; } = default!;
         public decimal TotalPrice { get; set; }
         public string OrderCode { get; set; }
         public DateTime OrderDate { get; set; }

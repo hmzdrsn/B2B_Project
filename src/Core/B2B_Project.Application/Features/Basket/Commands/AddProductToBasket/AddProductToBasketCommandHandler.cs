@@ -1,9 +1,8 @@
 ﻿using B2B_Project.Application.Common.Models;
-using B2B_Project.Application.DTOs.Basket;
 using B2B_Project.Application.Services;
 using MediatR;
 
-namespace B2B_Project.Application.Features.Basket.Commands
+namespace B2B_Project.Application.Features.Basket.Commands.AddProductToBasket
 {
 
     public class AddProductToBasketCommandHandler : IRequestHandler<AddProductToBasketCommandRequest, HandlerResponse<AddProductToBasketCommandResponse>>
@@ -17,7 +16,7 @@ namespace B2B_Project.Application.Features.Basket.Commands
 
         public async Task<HandlerResponse<AddProductToBasketCommandResponse>> Handle(AddProductToBasketCommandRequest request, CancellationToken cancellationToken)
         {
-            AddProductToBasket model = new()
+            DTOs.Basket.AddProductToBasket model = new()
             {
                 Username = request.Username,
                 ProductId = request.ProductId,
