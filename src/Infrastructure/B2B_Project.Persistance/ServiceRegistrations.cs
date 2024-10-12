@@ -54,6 +54,9 @@ namespace B2B_Project.Persistance
             services.AddScoped<IMessageReadRepository, MessageReadRepository>();
             services.AddScoped<IMessageWriteRepository, MessageWriteRepository>();
 
+            services.AddScoped<IDiscountReadRepository, DiscountReadRepository>();
+            services.AddScoped<IDiscountWriteRepository, DiscountWriteRepository>();
+
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();

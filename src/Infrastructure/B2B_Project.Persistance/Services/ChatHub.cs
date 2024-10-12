@@ -25,7 +25,7 @@ namespace B2B_Project.Persistance.Services
             user.IsOnline = true;
             await _userManager.UpdateAsync(user);
             await Groups.AddToGroupAsync(Context.ConnectionId, user.Id);//user.Id.ToString()
-
+            await Clients.All.SendAsync("statusChanged");
             await base.OnConnectedAsync();
         }
 
@@ -36,6 +36,7 @@ namespace B2B_Project.Persistance.Services
             user.IsOnline = false;
             await _userManager.UpdateAsync(user);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, user.Id.ToString());
+            await Clients.All.SendAsync("statusChanged");
             await base.OnDisconnectedAsync(exception);
         }
     }

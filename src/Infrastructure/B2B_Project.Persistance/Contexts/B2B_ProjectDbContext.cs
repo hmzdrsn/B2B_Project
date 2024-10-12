@@ -40,6 +40,15 @@ namespace B2B_Project.Persistance.Context
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<UserDiscount>()
+                .HasOne(x => x.Discount)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<ProductDiscount>()
+                .HasOne(x => x.Discount)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+
             base.OnModelCreating(builder);
         }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -87,5 +96,8 @@ namespace B2B_Project.Persistance.Context
         public DbSet<Image> Images { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
+        public DbSet<UserDiscount> UserDiscounts { get; set; }
+        public DbSet<ProductDiscount> ProductDiscounts { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using B2B_Project.Persistance.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace B2B_Project.Persistance.Migrations
 {
     [DbContext(typeof(B2B_ProjectDbContext))]
-    partial class B2B_ProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241012221923_mig12")]
+    partial class mig12
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
