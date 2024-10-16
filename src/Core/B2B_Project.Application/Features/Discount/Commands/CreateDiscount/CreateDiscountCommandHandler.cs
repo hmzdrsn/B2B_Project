@@ -42,13 +42,13 @@ namespace B2B_Project.Application.Features.Discount.Commands.CreateDiscount
                     Message = "Company Not Found!"
                 };
             }
-            if (request.DiscountRate <= 0 || request.DiscountRate > 100)
-            {
-                return new()
-                {
-                    Message = "Check the Discount Rate!"
-                };
-            }
+            //if (request.DiscountAmount <= 0 || request.DiscountAmount > 100)
+            //{
+            //    return new()
+            //    {
+            //        Message = "Check the Discount Rate!"
+            //    };
+            //}
             if (request.MaxUsagePerUser < 0)
             {
                 return new()
@@ -56,8 +56,8 @@ namespace B2B_Project.Application.Features.Discount.Commands.CreateDiscount
                     Message = "Check the Max Usage Per User!"
                 };
             }
-
-            if (request.ValidFrom > request.ValidUntil || request.ValidFrom < DateTime.Now)
+            TimeSpan x = TimeSpan.FromMinutes(5);
+            if (request.ValidFrom > request.ValidUntil || request.ValidFrom < DateTime.Now - x)
             {
                 return new()
                 {
@@ -65,7 +65,7 @@ namespace B2B_Project.Application.Features.Discount.Commands.CreateDiscount
                 };
             }
             var existingDiscount = await _discountReadRepository.Table
-                .Where(x => x.DiscountCode == request.DiscountCode)
+                .Where(x => x.DiscountCode == request.DiscountCode && x.DeletedDate == null)
                 .FirstOrDefaultAsync(cancellationToken);
             if (existingDiscount != null)
             {
@@ -77,7 +77,8 @@ namespace B2B_Project.Application.Features.Discount.Commands.CreateDiscount
 
             Domain.Entities.Discount discount = new()
             {
-                DiscountRate = request.DiscountRate,
+                DiscountAmount = request.DiscountAmount,
+                isPercentage = request.isPercentage,
                 DiscountCode = request.DiscountCode,
                 ValidFrom = request.ValidFrom,
                 ValidUntil = request.ValidUntil,
@@ -89,7 +90,7 @@ namespace B2B_Project.Application.Features.Discount.Commands.CreateDiscount
             var saveCount = await _discountWriteRepository.SaveAsync();
             if (saveCount > 0)
             {
-                return new() { Message = "Discount Created Successfully" };
+                return new() { Message = "Discount Created Successfully", Status = "true" };
             }
             return new()
             {

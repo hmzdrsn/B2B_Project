@@ -2,7 +2,8 @@
 {
     public record CreateDiscountDto(
         string DiscountCode,
-        double DiscountRate,
+        double DiscountAmount,
+        bool IsPercentage,
         DateTime? ValidFrom,
         DateTime? ValidUntil,
         int MaxUsagePerUser

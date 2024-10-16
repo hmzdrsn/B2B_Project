@@ -16,6 +16,6 @@ namespace B2B_Project.Domain.Entities
         public AppUser PrimaryAppUser { get; set; }
         public string? SecondaryAppUserID { get; set; }//ikincil şirket kişisi
         public AppUser? SecondaryAppUser { get; set; }
-        ICollection<Product>? Products{ get; set; }
+        public ICollection<Product>? Products { get; set; }
     }
 }

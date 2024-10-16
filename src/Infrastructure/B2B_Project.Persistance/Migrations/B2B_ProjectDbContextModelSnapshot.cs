@@ -266,12 +266,12 @@ namespace B2B_Project.Persistance.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<double>("DiscountAmount")
+                        .HasColumnType("float");
+
                     b.Property<string>("DiscountCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("DiscountRate")
-                        .HasColumnType("float");
 
                     b.Property<int>("MaxUsagePerUser")
                         .HasColumnType("int");
@@ -284,6 +284,9 @@ namespace B2B_Project.Persistance.Migrations
 
                     b.Property<DateTime?>("ValidUntil")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("isPercentage")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -957,7 +960,7 @@ namespace B2B_Project.Persistance.Migrations
                         .HasForeignKey("CategoryId");
 
                     b.HasOne("B2B_Project.Domain.Entities.Company", "Company")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("CompanyId");
 
                     b.Navigation("Category");
@@ -1072,6 +1075,11 @@ namespace B2B_Project.Persistance.Migrations
             modelBuilder.Entity("B2B_Project.Domain.Entities.Basket", b =>
                 {
                     b.Navigation("BasketItems");
+                });
+
+            modelBuilder.Entity("B2B_Project.Domain.Entities.Company", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("B2B_Project.Domain.Entities.Order", b =>

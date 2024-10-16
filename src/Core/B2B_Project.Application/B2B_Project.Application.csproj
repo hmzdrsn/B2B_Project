@@ -20,9 +20,9 @@
   <ItemGroup>
     <Folder Include="Features\Category\Commands\" />
     <Folder Include="Features\Company\Queries\" />
-    <Folder Include="Features\Discount\Queries\" />
     <Folder Include="Features\Image\Queries\" />
     <Folder Include="Features\OrderStatus\Commands\" />
+    <Folder Include="Features\ProductDiscount\Commands\" />
   </ItemGroup>
 
 </Project>

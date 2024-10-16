@@ -1,7 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿
 
 #nullable disable
+
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace B2B_Project.Persistance.Migrations
 {
@@ -17,7 +18,8 @@ namespace B2B_Project.Persistance.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DiscountCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DiscountRate = table.Column<double>(type: "float", nullable: false),
+                    DiscountAmount = table.Column<double>(type: "float", nullable: false),
+                    isPercentage = table.Column<bool>(type: "bit", nullable: false),
                     ValidFrom = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ValidUntil = table.Column<DateTime>(type: "datetime2", nullable: true),
                     MaxUsagePerUser = table.Column<int>(type: "int", nullable: false),

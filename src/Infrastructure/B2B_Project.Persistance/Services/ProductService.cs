@@ -250,7 +250,7 @@ namespace B2B_Project.Persistance.Services
 
             foreach (var item in product)
             {
-                var image = await _imageReadRepository.Table.FirstOrDefaultAsync(x => x.EntityId == item.ProductId);
+                var image = await _imageReadRepository.Table.FirstOrDefaultAsync(x => x.EntityId == item.ProductId && x.DeletedDate == null);
                 if (image != null)
                 {
                     item.ProductUrl = image.ImageUrl ?? "";
