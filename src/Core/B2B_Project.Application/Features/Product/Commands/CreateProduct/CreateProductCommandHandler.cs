@@ -1,50 +1,63 @@
 ﻿using B2B_Project.Application.Common.Models;
-using B2B_Project.Application.Repositories;
+using B2B_Project.Application.Features.Product.Commands.CreateProduct;
 using B2B_Project.Application.Services;
-using B2B_Project.Domain.Entities;
+using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
-namespace B2B_Project.Application.Features.Product.Commands.CreateProduct
+public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest, HandlerResponse<CreateProductCommandResponse>>
 {
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest, HandlerResponse<CreateProductCommandResponse>>
+    private readonly IValidator<CreateProductCommandRequest> _validator;
+    private readonly IProductService _productService;
+
+    public CreateProductCommandHandler(IValidator<CreateProductCommandRequest> validator, IProductService productService)
     {
-        private readonly IProductService _productService;
+        _validator = validator;
+        _productService = productService;
+    }
 
-        public CreateProductCommandHandler(IProductService productService, ICompanyReadRepository companyReadRepository)
-        {
-            _productService = productService;
-        }
+    public async Task<HandlerResponse<CreateProductCommandResponse>> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
+    {
+        var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
-        public async Task<HandlerResponse<CreateProductCommandResponse>> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
+        if (!validationResult.IsValid)
         {
-            bool res = await _productService.CreateProductAsync(new()
-            {
-                Name = request.Name,
-                Description = request.Description,
-                Price = request.Price,
-                ProductCode = request.ProductCode,
-                Stock = request.Stock,
-                CategoryId = request.CategoryId,
-                Username = request.Username,
-                ProductImages = request.ProductImages
-            });
-            if (res)
-            {
-                return new()
-                {
-                    Message = "Product Successfully Added.",
-                    Status = "Added",
-                    Data = new()
-                };
-            }
+            var errorMessages = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+
             return new()
             {
-                Message = "An error occurred while adding the product.",
-                Status = "Error",
-                Data = new()
+                Message = $"Validasyon hataları: {errorMessages}",
+                Status = "ValidationError",
+                Data = null
             };
         }
+
+        bool res = await _productService.CreateProductAsync(new()
+        {
+            Name = request.Name,
+            Description = request.Description,
+            Price = request.Price,
+            ProductCode = request.ProductCode,
+            Stock = request.Stock,
+            CategoryId = request.CategoryId,
+            Username = request.Username,
+            ProductImages = request.ProductImages
+        });
+
+        if (res)
+        {
+            return new HandlerResponse<CreateProductCommandResponse>
+            {
+                Message = "Ürün başarıyla eklendi.",
+                Status = "Added",
+                Data = new CreateProductCommandResponse()
+            };
+        }
+
+        return new HandlerResponse<CreateProductCommandResponse>
+        {
+            Message = "Ürün eklenirken bir hata oluştu.",
+            Status = "Error",
+            Data = null
+        };
     }
 }

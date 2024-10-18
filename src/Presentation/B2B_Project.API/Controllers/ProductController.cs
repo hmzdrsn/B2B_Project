@@ -7,6 +7,7 @@ using B2B_Project.Application.Features.Product.Queries.GetCompanyProductsByUsern
 using B2B_Project.Application.Features.Product.Queries.GetDefaultProductsByFilter;
 using B2B_Project.Application.Features.Product.Queries.GetProductsByCategory;
 using B2B_Project.Application.Features.Product.Queries.GetProductsByCompany;
+using B2B_Project.Application.Features.Product.Queries.GetProductsByDynamicFilters;
 using B2B_Project.Application.Features.Product.Queries.GetProductsCount;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -99,6 +100,13 @@ namespace B2B_Project.API.Controllers
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteById([FromQuery] RemoveProductCommandRequest req)
+        {
+            var res = await _mediator.Send(req);
+            return Ok(res);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProductsByDynamicFilters([FromQuery] GetProductsByDynamicFiltersCommandRequest req)
         {
             var res = await _mediator.Send(req);
             return Ok(res);

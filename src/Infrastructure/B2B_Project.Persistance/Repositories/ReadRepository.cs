@@ -1,6 +1,7 @@
 ﻿using B2B_Project.Application.Repositories;
 using B2B_Project.Domain.Common;
 using B2B_Project.Persistance.Context;
+using B2B_Project.Persistance.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace B2B_Project.Persistance.Repositories
@@ -25,6 +26,11 @@ namespace B2B_Project.Persistance.Repositories
         {
             var query = Table.AsQueryable();
             return await query.FirstOrDefaultAsync(x => x.Id.ToString() == id);
+        }
+
+        public IQueryable<T> WhereDynamic(string propertyName, object value, string operation)
+        {
+            return Table.WhereDynamic(propertyName, value, operation);
         }
     }
 }
